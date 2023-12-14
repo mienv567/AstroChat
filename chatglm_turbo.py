@@ -9,14 +9,15 @@ import torch
 import zhipuai
 from utils import greeting_msg, greeting_msg2
 from utils import init_llm_knowledge_dict, time_loc_task, time_task, loc_task, confirm_task, ixingpan_task, moon_solar_asc_task
-
+from utils import _prepare_http_data, _fetch_ixingpan_soup
+from utils import prompt_time_loc
 
 class FakeData:
     def __init__(self, data):
         self.data = data
 
 
-def do_pipeline(bot_msg):
+def do_pipeline(bot_msg) -> str:
     queue = st.session_state.task_queue
     if len(queue) == 0:
         # TODO: 解盘结束，欢迎继续咨询每年运势
@@ -25,8 +26,18 @@ def do_pipeline(bot_msg):
     cur_task = queue[0]
 
     if cur_task == time_loc_task:
-        pass
+        birthday, dist, is_dst, toffset, loc = _prepare_http_data(bot_msg)
+        soup_ixingpan = _fetch_ixingpan_soup(dist=dist, birthday_time=birthday, dst=is_dst, female=1)
 
+        print(birthday, dist, is_dst, toffset, loc)
+
+        if birthday != '无' and loc != '无' and dist != '':
+            st.session_state.task_queue.remove(time_loc_task)
+            st.session_state.task_queue.remove(time_task)
+            st.session_state.task_queue.remove(loc_task)
+
+            msg = f'\n\n将按如下信息排盘：<br>出生日期:{birthday}\t出生地点:{loc}\t区域ID:{dist}\t日光时:{is_dst}'
+            return msg
 
 
 def check_birthday_and_loc():
@@ -90,6 +101,9 @@ def fake_robot_response(text):
 
 
 def fetch_chatglm_turbo_response(user_input):
+    if st.session_state.cur_task == time_loc_task:
+        user_input = prompt_time_loc.format(user_input)
+
     response = zhipuai.model_api.sse_invoke(
         model="chatglm_turbo",
         prompt=[
@@ -153,12 +167,10 @@ if user_input:
     input_placeholder.markdown(user_input)
     add_user_history(user_input)
 
-    has_day, has_loc = check_birthday_and_loc()
-
-    if not has_day or not has_loc:
-        response = ask_birthinfo()
-    else:
-        response = fetch_chatglm_turbo_response(user_input)
+    # if len(st.session_state.task_queue) != 0 and time_loc_task in st.session_state.task_queue:
+    #     response = ask_birthinfo()
+    # else:
+    response = fetch_chatglm_turbo_response(user_input)
 
     llm_flag = False
     res_vec = []
@@ -173,7 +185,10 @@ if user_input:
         message_placeholder.markdown(''.join(res_vec))
 
     if llm_flag:
-        do_pipeline(bot_msg=''.join(res_vec))
+        pipeline_msg = do_pipeline(bot_msg=''.join(res_vec))
+
+        res_vec.append(pipeline_msg)
+        message_placeholder.markdown(''.join(res_vec))
 
     # history.append({'content': ''.join(res_vec), 'role': "assistant"})
     add_robot_history(''.join(res_vec))

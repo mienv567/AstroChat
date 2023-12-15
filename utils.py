@@ -38,7 +38,6 @@ def init_llm_knowledge_dict():
     return llm_knowledge_dict
 
 
-
 class Recepted:
     def __init__(self, star_a, star_b, action_name, level=''):
         self.star_a = star_a

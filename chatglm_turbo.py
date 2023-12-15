@@ -3,17 +3,29 @@
 import os
 import random
 import time
-from datetime import date
 import datetime
-# from datetime import datetime
 from typing import Dict, List
 import streamlit as st
-import torch
 import zhipuai
 from utils import greeting_msg, greeting_msg2
 from utils import init_llm_knowledge_dict, time_loc_task, date_task, time_task, loc_task, confirm_task, ixingpan_task, moon_solar_asc_task
 from utils import _prepare_http_data, _fetch_ixingpan_soup
 from utils import prompt_time_loc
+
+task_chain = [date_task, time_task, loc_task, confirm_task, ixingpan_task, moon_solar_asc_task]
+
+def set_next_task():
+    cur_task = st.session_state.cur_task
+
+    if cur_task == task_chain[-1]:
+        st.session_state.cur_task = None
+
+    for i in range(len(task_chain)):
+        if cur_task == task_chain[i] and i < len(task_chain) - 1:
+            st.session_state.cur_task = task_chain[i + 1]
+            print('cur_task is:', st.session_state.cur_task)
+            break
+
 
 class FakeData:
     def __init__(self, data):
@@ -130,8 +142,8 @@ if "history" not in st.session_state:
     def init_session():
         zhipuai.api_key = st.session_state.llm_dict['chatglm_turbo']['token']
 
-        st.session_state.task_queue = [time_loc_task, date_task, time_task, loc_task, confirm_task, ixingpan_task, moon_solar_asc_task]
-        st.session_state.cur_task = date_task
+        # st.session_state.task_queue = [time_loc_task, date_task, time_task, loc_task, confirm_task, ixingpan_task, moon_solar_asc_task]
+        st.session_state.cur_task = task_chain[0]
         # st.session_state.birthday = ''
         # st.session_state.birthloc = ''
         st.session_state.date_of_birth = datetime.datetime.now().date()
@@ -175,10 +187,11 @@ if st.session_state.cur_task == date_task:
     min_v, max_v = datetime.date(today.year - 100, 1, 1), datetime.date(today.year + 1, 12, 31)
 
     user_input = st.date_input(label=label, format=fmt, key="date_of_birth", value=v, min_value=min_v, max_value=max_v, on_change=on_date_change)
+    set_next_task()
 elif st.session_state.cur_task == time_task:
-    label, fmt = ':alarm_clock: 请输入出生小时', "YYYY-MM-DD"
-    user_input = st.time_input(label=label, format=fmt, key="date_of_birth", value=v, min_value=min_v, max_value=max_v,
-                               on_change=on_date_change)
+    label = ':alarm_clock: 请输入出生小时(结果精确的关键因素)'
+    user_input = st.time_input(label=label, value=datetime.time(12, 30), key='time_of_birth')
+
 else:
     user_input = st.chat_input("请输入问题... ")
 

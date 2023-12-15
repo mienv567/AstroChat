@@ -137,8 +137,8 @@ def fetch_chatglm_turbo_response(user_input):
 
 
 # 设置页面标题、图标和布局
-# st.set_page_config(page_title="桥下指北", page_icon=":robot:")
-st.set_page_config(page_title="桥下指北", page_icon=":robot:", layout="wide")
+st.set_page_config(page_title="桥下指北", page_icon=":robot:")
+# st.set_page_config(page_title="桥下指北", page_icon=":robot:", layout="wide")
 
 # 初始化历史记录和past key values
 if "history" not in st.session_state:
@@ -168,7 +168,7 @@ if "past_key_values" not in st.session_state:
     st.session_state.past_key_values = None
 
 
-max_length = st.sidebar.date_input("max_length")
+# max_length = st.sidebar.date_input("max_length")
 
 
 
@@ -183,18 +183,17 @@ for i, message in enumerate(st.session_state.history):
         with st.chat_message(name="assistant", avatar="assistant"):
             st.markdown(message["content"])
 
-# 输入框和输出框
-with st.chat_message(name="user", avatar="user"):
-    input_placeholder = st.empty()
-with st.chat_message(name="assistant", avatar="assistant"):
-    message_placeholder = st.empty()
-
 # 获取用户输入
-if st.session_state.cur_task == date_task:
+# if st.session_state.cur_task == date_task:
+
+col1, col2 = st.columns(2)
+
+with col1:
     def on_date_change():
         st.session_state.age = int(datetime.datetime.now().date().year - st.session_state.date_of_birth.year)
-        message_placeholder.markdown(st.session_state.date_of_birth)
-        add_user_history(f'出生日期：{st.session_state.date_of_birth}')
+        print('年龄是 ', st.session_state.age)
+        # message_placeholder.markdown(st.session_state.date_of_birth)
+        # add_user_history(f'出生日期：{st.session_state.date_of_birth}')
 
         set_cur_task(date_task)
         set_next_task()
@@ -204,26 +203,40 @@ if st.session_state.cur_task == date_task:
     today = datetime.datetime.now()
     min_v, max_v = datetime.date(today.year - 100, 1, 1), datetime.date(today.year + 1, 12, 31)
 
-    user_input = st.date_input(label=label, format=fmt, key="date_of_birth", min_value=min_v, max_value=max_v, on_change=on_date_change)
-    # user_input = st.date_input(label=label, format=fmt, key="date_of_birth", value=v, min_value=min_v, max_value=max_v, on_change=on_date_change)
+    st.date_input(label=label, format=fmt, key="date_of_birth", min_value=min_v, max_value=max_v, on_change=on_date_change)
+    st.write('排盘使用出生日期: ', st.session_state.date_of_birth)
+    # user_input = st.date_input(label=label, format=fmt, key="date_of_birth", min_value=min_v, max_value=max_v, on_change=on_date_change)
 
-elif st.session_state.cur_task == time_task:
+with col2:
+# elif st.session_state.cur_task == time_task:
     def on_time_change():
-        add_user_history(f'出生时间：{st.session_state.time_of_birth}')
-
+        # add_user_history(f'出生时间：{st.session_state.time_of_birth}')
         set_cur_task(time_task)
         set_next_task()
 
-    label = ':alarm_clock: 请输入出生小时(结果精确的关键因素)'
-    user_input = st.time_input(label=label, value=datetime.time(12, 30), key='time_of_birth', on_change=on_time_change)
+    label = ':alarm_clock: 请输入出生时辰'
+    st.time_input(label=label, value=datetime.time(12, 30), key='time_of_birth', on_change=on_time_change)
+    st.write('排盘使用出生时辰:', st.session_state.time_of_birth)
+    # user_input = st.time_input(label=label, value=datetime.time(12, 30), key='time_of_birth', on_change=on_time_change)
 
+if st.session_state.age != 0:
+    # https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/
+    msg = f'将使用如下信息排盘：\n\n:date: 出生日期：{st.session_state.date_of_birth}    :alarm_clock: 出生时辰：{st.session_state.time_of_birth}'
+    add_robot_history(msg)
 
-else:
-    user_input = st.chat_input("请输入问题... ")
+# else:
+user_input = st.chat_input("请输入问题... ")
 # user_input = st.text_input("请输入问题... ", value='出生时间: 2024.01.01 09:58  地点:山东省济南市历下区')
+
+# 输入框和输出框
+# with st.chat_message(name="user", avatar="user"):
+#     input_placeholder = st.empty()
+# with st.chat_message(name="assistant", avatar="assistant"):
+#     message_placeholder = st.empty()
 
 # 如果用户输入了内容,则生成回复
 if st.session_state.cur_task not in [time_task, date_task] and user_input:
+    input_placeholder = st.empty()
     input_placeholder.markdown(user_input)
     add_user_history(user_input)
 
@@ -231,6 +244,7 @@ if st.session_state.cur_task not in [time_task, date_task] and user_input:
 
     llm_flag = False
     res_vec = []
+    message_placeholder = st.empty()
     for event in response:
         response_data = event.data
         res_vec.append(response_data)
@@ -239,6 +253,7 @@ if st.session_state.cur_task not in [time_task, date_task] and user_input:
             time.sleep(0.05)
         else:
             llm_flag = True
+
         message_placeholder.markdown(''.join(res_vec))
 
     if llm_flag:

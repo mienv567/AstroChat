@@ -8,7 +8,8 @@ from typing import Dict, List
 import streamlit as st
 import zhipuai
 from utils import greeting_msg, greeting_msg2
-from utils import init_llm_knowledge_dict, time_loc_task, date_task, time_task, loc_task, confirm_task, ixingpan_task, moon_solar_asc_task
+from utils import init_llm_knowledge_dict, load_ixingpan_area
+from utils import time_loc_task, date_task, time_task, loc_task, confirm_task, ixingpan_task, moon_solar_asc_task
 from utils import _prepare_http_data, _fetch_ixingpan_soup
 from utils import prompt_time_loc
 
@@ -88,8 +89,8 @@ def fake_robot_response(text):
 
 
 def fetch_chatglm_turbo_response(user_input):
-    if st.session_state.cur_task == time_loc_task:
-        user_input = prompt_time_loc.format(user_input)
+    # if st.session_state.cur_task == time_loc_task:
+        # user_input = prompt_time_loc.format(user_input)
 
     response = zhipuai.model_api.sse_invoke(
         model="chatglm_turbo",
@@ -123,14 +124,8 @@ if "history" not in st.session_state:
         st.session_state.time_of_birth = datetime.time(12, 30)
         st.session_state.age = 0
 
-
-    # with st.chat_message(name="assistant", avatar="assistant"):
-    #     message_placeholder = st.empty()
-
-    # st.session_state.history = [{'role': "assistant", 'content': f'{greeting_msg}'}]
-    # add_robot_history(greeting_msg)
-    # add_robot_history(greeting_msg2)
     st.session_state.llm_dict = init_llm_knowledge_dict()
+    st.session_state.area_dict = load_ixingpan_area()
     print('llm_dict size:', len(st.session_state.llm_dict))
 
     init_session()
@@ -140,25 +135,23 @@ if "past_key_values" not in st.session_state:
     st.session_state.past_key_values = None
 
 
-# ''' 渲染 Bot Greeting Message '''
-for content in [greeting_msg, greeting_msg2]:
-    with st.chat_message(name="assistant", avatar="assistant"):
-        st.markdown(content)
 
+# --------------------------------- 搞 Greeting --------------------
+st.markdown("#### **你好，我是自助占星机器人:rainbow[「小乔」]**:tulip::cherry_blossom::rose::hibiscus::sunflower::blossom:   ")
+st.markdown("> 占星服务，请选择:rainbow[「诞生日」]和:rainbow[「诞生地」]，建议精确到小时、区县。   ")
+st.markdown("")
 
-# 获取用户输入
-# if st.session_state.cur_task == date_task:
-
+# --------------------------------- 搞生日 --------------------------
+st.markdown('\n\n\n\n')
+st.markdown(' ')
 col1, col2 = st.columns(2)
 
 with col1:
     def on_date_change():
         st.session_state.age = int(datetime.datetime.now().date().year - st.session_state.date_of_birth.year)
-        print('年龄是 ', st.session_state.age)
-        print('生日是 ', st.session_state.date_of_birth)
 
-        set_cur_task(date_task)
         set_next_task()
+        # update_birthday()
 
     label, fmt = ':date: 请选择生日', "YYYY-MM-DD"
     v = datetime.datetime(year=2000, month=1, day=20)
@@ -166,28 +159,38 @@ with col1:
     min_v, max_v = datetime.date(today.year - 100, 1, 1), datetime.date(today.year + 1, 12, 31)
 
     st.date_input(label=label, format=fmt, key="date_of_birth", min_value=min_v, max_value=max_v, on_change=on_date_change)
-    st.write('排盘使用出生日期: ', st.session_state.date_of_birth)
-    # user_input = st.date_input(label=label, format=fmt, key="date_of_birth", min_value=min_v, max_value=max_v, on_change=on_date_change)
+
 
 with col2:
-# elif st.session_state.cur_task == time_task:
     def on_time_change():
-        # add_user_history(f'出生时间：{st.session_state.time_of_birth}')
-        set_cur_task(time_task)
         set_next_task()
         print('生日是 ', st.session_state.time_of_birth)
+        # update_birthday()
 
 
     label = ':alarm_clock: 请选择生时'
     st.time_input(label=label, key='time_of_birth', on_change=on_time_change)
-    st.write('排盘使用出生时辰:', st.session_state.time_of_birth)
-    # user_input = st.time_input(label=label, value=datetime.time(12, 30), key='time_of_birth', on_change=on_time_change)
 
 
-if st.session_state.date_of_birth != datetime.datetime.now().date():
+def update_birthday():
     # https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/
-    msg = f':birthday: 将使用如下生辰排盘 :birthday: ：`{st.session_state.date_of_birth} {st.session_state.time_of_birth}`'
-    add_robot_history(msg)
+    msg = f':crystal_ball: 将使用如下信息排盘 :crystal_ball: ：`{st.session_state.date_of_birth} {st.session_state.time_of_birth}, {st.session_state.province_of_birth} {st.session_state.city_of_birth} {st.session_state.area_of_birth}`'
+    msg2 = f'`, {st.session_state.province_of_birth} {st.session_state.city_of_birth} {st.session_state.area_of_birth}`'
+    add_robot_history(f'{msg}')
+
+
+# ------------------------------- 搞位置 -------------------------------
+col_province, col_city, col_area = st.columns(3)
+with col_province:
+    # 创建第一个下拉菜单
+    option1 = st.selectbox(label=':cn: 请选择诞生地', index=0, options=st.session_state.area_dict.keys(), key='province_of_birth', placeholder='省份/大洲')
+
+with col_city:
+    # 根据第一个下拉菜单的选项，更新第二个下拉菜单的选项
+    option2 = st.selectbox(label='1', index=0, options=st.session_state.area_dict[option1].keys(), key='city_of_birth', placeholder='城市', label_visibility='hidden')
+
+with col_area:
+    option3 = st.selectbox(label='1', index=0, options=st.session_state.area_dict[option1][option2].keys(), key='area_of_birth', placeholder='区/县', on_change=update_birthday, label_visibility='hidden')
 
 
 # 渲染聊天历史记录
@@ -207,38 +210,34 @@ user_input = st.chat_input("请输入问题... ")
 # user_input = st.text_input("请输入问题... ", value='出生时间: 2024.01.01 09:58  地点:山东省济南市历下区')
 
 # 输入框和输出框
-# with st.chat_message(name="user", avatar="user"):
-#     input_placeholder = st.empty()
-# with st.chat_message(name="assistant", avatar="assistant"):
-#     message_placeholder = st.empty()
+with st.chat_message(name="user", avatar="user"):
+    input_placeholder = st.empty()
+with st.chat_message(name="assistant", avatar="assistant"):
+    message_placeholder = st.empty()
 
 # 如果用户输入了内容,则生成回复
 if st.session_state.cur_task not in [time_task, date_task] and user_input:
-    input_placeholder = st.empty()
     input_placeholder.markdown(user_input)
     add_user_history(user_input)
 
     response = fetch_chatglm_turbo_response(user_input)
 
-    llm_flag = False
+    # llm_flag = False
     res_vec = []
-    message_placeholder = st.empty()
     for event in response:
         response_data = event.data
         res_vec.append(response_data)
+        message_placeholder.markdown(''.join(res_vec))
 
         if isinstance(event, FakeData):
             time.sleep(0.05)
         else:
             llm_flag = True
 
-        message_placeholder.markdown(''.join(res_vec))
+    # if llm_flag:
+    #     pipeline_msg = do_pipeline(bot_msg=''.join(res_vec))
 
-    if llm_flag:
-        pipeline_msg = do_pipeline(bot_msg=''.join(res_vec))
-
-        res_vec.append(pipeline_msg)
-        message_placeholder.markdown(''.join(res_vec))
+        # res_vec.append(pipeline_msg)
 
     # history.append({'content': ''.join(res_vec), 'role': "assistant"})
     add_robot_history(''.join(res_vec))

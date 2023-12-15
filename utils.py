@@ -38,6 +38,34 @@ def init_llm_knowledge_dict():
     return llm_knowledge_dict
 
 
+def load_ixingpan_area():
+    area_dict = {'山东省':
+                     {'济南市':
+                          {'长清区': 1557, 'xx': 123},
+                      '烟台市':
+                          {'长岛县': 1611, '福山区': 123}}}
+    area_dict.clear()
+    with open('./file/ixingpan_area.json', 'r') as file:
+        json_data = json.load(file)
+        for province in json_data.keys():
+            if province not in area_dict:
+                area_dict[province] = {}
+
+            city_json = json_data[province].keys()
+            for city in city_json:
+                if city not in area_dict[province]:
+                    area_dict[province][city] = {}
+
+                area_vec = json_data[province][city].split(',')
+                for sub in area_vec:
+                    area = sub.split('|')[0]
+                    areaid = sub.split('|')[1]
+
+                    area_dict[province][city].update({area: areaid})
+
+    return area_dict
+
+
 class Recepted:
     def __init__(self, star_a, star_b, action_name, level=''):
         self.star_a = star_a
@@ -473,14 +501,5 @@ def parse_pan(bot_msg):
 
 
 if __name__ == '__main__':
-    text = """
-    时间：1992-08-04 09:58
-位置：北京市海淀区
-将用以上信息排盘
-    """
-    text2 = """
-    时间：1992-08-04 09:58
-位置：无
-将用以上信息排盘
-    """
-    print(_parse_time(text2))
+    area_dict = load_ixingpan_area()
+    print(area_dict)

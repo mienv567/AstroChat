@@ -119,8 +119,8 @@ def fetch_chatglm_turbo_response(user_input):
 
 
 # 设置页面标题、图标和布局
-st.set_page_config(page_title="桥下指北", page_icon=":robot:")
-# st.set_page_config(page_title="桥下指北", page_icon=":robot:", layout="wide")
+# st.set_page_config(page_title="桥下指北", page_icon=":robot:")
+st.set_page_config(page_title="桥下指北", page_icon=":robot:", layout="wide")
 
 # 初始化历史记录和past key values
 if "history" not in st.session_state:

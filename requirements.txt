@@ -1,4 +1,5 @@
 protobuf
+zhipuai
 transformers>=4.30.2
 cpm_kernels
 torch>=2.0

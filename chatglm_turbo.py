@@ -3,12 +3,15 @@
 import os
 import random
 import time
+from datetime import date
+import datetime
+# from datetime import datetime
 from typing import Dict, List
 import streamlit as st
 import torch
 import zhipuai
 from utils import greeting_msg, greeting_msg2
-from utils import init_llm_knowledge_dict, time_loc_task, time_task, loc_task, confirm_task, ixingpan_task, moon_solar_asc_task
+from utils import init_llm_knowledge_dict, time_loc_task, date_task, time_task, loc_task, confirm_task, ixingpan_task, moon_solar_asc_task
 from utils import _prepare_http_data, _fetch_ixingpan_soup
 from utils import prompt_time_loc
 
@@ -124,17 +127,23 @@ st.set_page_config(page_title="桥下指北", page_icon=":robot:", layout="wide"
 
 # 初始化历史记录和past key values
 if "history" not in st.session_state:
+    def init_session():
+        zhipuai.api_key = st.session_state.llm_dict['chatglm_turbo']['token']
+
+        st.session_state.task_queue = [time_loc_task, date_task, time_task, loc_task, confirm_task, ixingpan_task, moon_solar_asc_task]
+        st.session_state.cur_task = date_task
+        # st.session_state.birthday = ''
+        # st.session_state.birthloc = ''
+        st.session_state.date_of_birth = datetime.datetime.now().date()
+        st.session_state.age = 0
+
     st.session_state.history = [{'role': "assistant", 'content': f'{greeting_msg}'}]
     add_robot_history(greeting_msg2)
     st.session_state.llm_dict = init_llm_knowledge_dict()
     print('llm_dict size:', len(st.session_state.llm_dict))
 
-    zhipuai.api_key = st.session_state.llm_dict['chatglm_turbo']['token']
+    init_session()
 
-    st.session_state.task_queue = [time_loc_task, time_task, loc_task, confirm_task, ixingpan_task, moon_solar_asc_task]
-    st.session_state.cur_task = time_loc_task
-    st.session_state.birthday = ''
-    st.session_state.birthloc = ''
 
 if "past_key_values" not in st.session_state:
     st.session_state.past_key_values = None
@@ -156,20 +165,30 @@ with st.chat_message(name="assistant", avatar="assistant"):
     message_placeholder = st.empty()
 
 # 获取用户输入
-user_input = st.chat_input("请输入问题... ")
-if len(st.session_state.task_queue) > 0 and st.session_state.task_queue[0] == time_loc_task:
-    user_input = st.chat_input("例如输入：1992年8月4日 9点58分 地点:山东省济南市历下区")
+if st.session_state.cur_task == date_task:
+    def on_date_change():
+        st.session_state.age = int(datetime.datetime.now().date().year - st.session_state.date_of_birth.year)
+
+    label, fmt = ':birthday: 请输入出生日期', "YYYY-MM-DD"
+    v = datetime.datetime(year=2000, month=1, day=20)
+    today = datetime.datetime.now()
+    min_v, max_v = datetime.date(today.year - 100, 1, 1), datetime.date(today.year + 1, 12, 31)
+
+    user_input = st.date_input(label=label, format=fmt, key="date_of_birth", value=v, min_value=min_v, max_value=max_v, on_change=on_date_change)
+elif st.session_state.cur_task == time_task:
+    label, fmt = ':alarm_clock: 请输入出生小时', "YYYY-MM-DD"
+    user_input = st.time_input(label=label, format=fmt, key="date_of_birth", value=v, min_value=min_v, max_value=max_v,
+                               on_change=on_date_change)
+else:
+    user_input = st.chat_input("请输入问题... ")
 
 # user_input = st.text_input("请输入问题... ", value='出生时间: 2024.01.01 09:58  地点:山东省济南市历下区')
 
 # 如果用户输入了内容,则生成回复
-if user_input:
+if st.session_state.cur_task != time_task and user_input:
     input_placeholder.markdown(user_input)
     add_user_history(user_input)
 
-    # if len(st.session_state.task_queue) != 0 and time_loc_task in st.session_state.task_queue:
-    #     response = ask_birthinfo()
-    # else:
     response = fetch_chatglm_turbo_response(user_input)
 
     llm_flag = False

@@ -30,6 +30,7 @@ def set_next_task():
 def set_cur_task(cur):
     st.session_state.cur_task = cur
 
+
 class FakeData:
     def __init__(self, data):
         self.data = data
@@ -56,38 +57,6 @@ def do_pipeline(bot_msg) -> str:
 
             msg = f'\n\n将按如下信息排盘：<br>出生日期:{birthday}\t出生地点:{loc}\t区域ID:{dist}\t日光时:{is_dst}'
             return msg
-
-
-def check_birthday_and_loc():
-    day, loc = False, False
-    if st.session_state.birthday != '':
-        day = True
-
-    if st.session_state.birthloc != '':
-        loc = True
-
-    return day, loc
-
-
-def ask_birthinfo() -> List[FakeData]:
-    has_day, has_loc = False, False
-    if st.session_state.birthday != '':
-        has_day = True
-
-    if st.session_state.birthloc != '':
-        has_loc = True
-
-    if not has_day and not has_loc:
-        msg = '您还没有输入出生时间和地点哦~~  参考输入：\n>出生时间: 2000.06.06 09:58；地点: 山东省济南市历下区'
-        response = fake_robot_response(msg)
-    elif not has_day:
-        msg = '请输入正确的出生时间哦~~  最好精确到小时(默认12点排盘)，参考输入：\n>出生时间: 2000.06.06 09:58'
-        response = fake_robot_response(msg)
-    elif not has_loc:
-        msg = '请输入正确的出生地哦~~  最好精确到区/县呢，参考输入：\n>地点: 山东省济南市历下区'
-        response = fake_robot_response(msg)
-
-    return response
 
 
 def add_user_history(text):
@@ -146,18 +115,21 @@ if "history" not in st.session_state:
         zhipuai.api_key = st.session_state.llm_dict['chatglm_turbo']['token']
 
         # st.session_state.task_queue = [time_loc_task, date_task, time_task, loc_task, confirm_task, ixingpan_task, moon_solar_asc_task]
+        st.session_state.history = []
         st.session_state.cur_task = task_chain[0]
         # st.session_state.birthday = ''
         # st.session_state.birthloc = ''
         st.session_state.date_of_birth = datetime.datetime.now().date()
+        st.session_state.time_of_birth = datetime.time(12, 30)
         st.session_state.age = 0
 
 
     # with st.chat_message(name="assistant", avatar="assistant"):
     #     message_placeholder = st.empty()
 
-    st.session_state.history = [{'role': "assistant", 'content': f'{greeting_msg}'}]
-    add_robot_history(greeting_msg2)
+    # st.session_state.history = [{'role': "assistant", 'content': f'{greeting_msg}'}]
+    # add_robot_history(greeting_msg)
+    # add_robot_history(greeting_msg2)
     st.session_state.llm_dict = init_llm_knowledge_dict()
     print('llm_dict size:', len(st.session_state.llm_dict))
 
@@ -168,20 +140,11 @@ if "past_key_values" not in st.session_state:
     st.session_state.past_key_values = None
 
 
-# max_length = st.sidebar.date_input("max_length")
+# ''' 渲染 Bot Greeting Message '''
+for content in [greeting_msg, greeting_msg2]:
+    with st.chat_message(name="assistant", avatar="assistant"):
+        st.markdown(content)
 
-
-
-# 渲染聊天历史记录
-for i, message in enumerate(st.session_state.history):
-    if message['content'] == '':
-        continue
-    if message["role"] == "user":
-        with st.chat_message(name="user", avatar="user"):
-            st.markdown(message["content"])
-    else:
-        with st.chat_message(name="assistant", avatar="assistant"):
-            st.markdown(message["content"])
 
 # 获取用户输入
 # if st.session_state.cur_task == date_task:
@@ -192,13 +155,12 @@ with col1:
     def on_date_change():
         st.session_state.age = int(datetime.datetime.now().date().year - st.session_state.date_of_birth.year)
         print('年龄是 ', st.session_state.age)
-        # message_placeholder.markdown(st.session_state.date_of_birth)
-        # add_user_history(f'出生日期：{st.session_state.date_of_birth}')
+        print('生日是 ', st.session_state.date_of_birth)
 
         set_cur_task(date_task)
         set_next_task()
 
-    label, fmt = ':birthday: 请输入出生日期', "YYYY-MM-DD"
+    label, fmt = ':date: 请选择生日', "YYYY-MM-DD"
     v = datetime.datetime(year=2000, month=1, day=20)
     today = datetime.datetime.now()
     min_v, max_v = datetime.date(today.year - 100, 1, 1), datetime.date(today.year + 1, 12, 31)
@@ -213,16 +175,32 @@ with col2:
         # add_user_history(f'出生时间：{st.session_state.time_of_birth}')
         set_cur_task(time_task)
         set_next_task()
+        print('生日是 ', st.session_state.time_of_birth)
 
-    label = ':alarm_clock: 请输入出生时辰'
-    st.time_input(label=label, value=datetime.time(12, 30), key='time_of_birth', on_change=on_time_change)
+
+    label = ':alarm_clock: 请选择生时'
+    st.time_input(label=label, key='time_of_birth', on_change=on_time_change)
     st.write('排盘使用出生时辰:', st.session_state.time_of_birth)
     # user_input = st.time_input(label=label, value=datetime.time(12, 30), key='time_of_birth', on_change=on_time_change)
 
-if st.session_state.age != 0:
+
+if st.session_state.date_of_birth != datetime.datetime.now().date():
     # https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/
-    msg = f'将使用如下信息排盘：\n\n:date: 出生日期：{st.session_state.date_of_birth}    :alarm_clock: 出生时辰：{st.session_state.time_of_birth}'
+    msg = f':birthday: 将使用如下生辰排盘 :birthday: ：`{st.session_state.date_of_birth} {st.session_state.time_of_birth}`'
     add_robot_history(msg)
+
+
+# 渲染聊天历史记录
+for i, message in enumerate(st.session_state.history):
+    if message['content'] == '':
+        continue
+    if message["role"] == "user":
+        with st.chat_message(name="user", avatar="user"):
+            st.markdown(message["content"])
+    else:
+        with st.chat_message(name="assistant", avatar="assistant"):
+            st.markdown(message["content"])
+
 
 # else:
 user_input = st.chat_input("请输入问题... ")

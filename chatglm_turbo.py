@@ -124,6 +124,10 @@ if "history" not in st.session_state:
         st.session_state.time_of_birth = datetime.time(12, 30)
         st.session_state.age = 0
         st.session_state.start_btn = 0
+        st.session_state.province_of_birth = '北美洲'
+        st.session_state.city_of_birth = '美国'
+        st.session_state.area_of_birth = '加利福尼亚 旧金山'
+        st.session_state.areaid = '4515'
 
     st.session_state.llm_dict = init_llm_knowledge_dict()
     st.session_state.area_dict = load_ixingpan_area()
@@ -178,7 +182,7 @@ with col_time:
 
 def update_birthday():
     # https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/
-    msg = f'将使用如下信息排盘 :crystal_ball: ：`{st.session_state.date_of_birth} {st.session_state.time_of_birth}, {st.session_state.province_of_birth} {st.session_state.city_of_birth} {st.session_state.area_of_birth}`'
+    msg = f'将使用如下信息排盘 :crystal_ball: ：`{st.session_state.date_of_birth} {st.session_state.time_of_birth}, {st.session_state.province_of_birth} {st.session_state.city_of_birth} {st.session_state.area_of_birth}, 区位ID:{st.session_state.areaid}`'
     add_robot_history(f'{msg}')
 
 
@@ -187,6 +191,14 @@ col_province, col_city, col_area = st.columns([0.3, 0.3, 0.4])
 def on_loc_change():
     st.session_state.start_btn = 0
 
+    p = st.session_state.province_of_birth
+    c = st.session_state.city_of_birth
+    a = st.session_state.area_of_birth
+
+    if p in st.session_state.area_dict and c in st.session_state.area_dict[p] and a in st.session_state.area_dict[p][c]:
+        st.session_state.areaid = st.session_state.area_dict[p][c][a]
+
+    # print(st.session_state.areaid, st.session_state.area_of_birth, option3)
 
 with col_province:
     # 创建第一个下拉菜单

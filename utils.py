@@ -54,7 +54,7 @@ def load_ixingpan_area():
             city_json = json_data[province].keys()
             for city in city_json:
                 if city not in area_dict[province]:
-                    area_dict[province][city] = {}
+                    area_dict[province][city] = {'未选择': '0'}
 
                 area_vec = json_data[province][city].split(',')
                 for sub in area_vec:
@@ -493,7 +493,7 @@ def _parse_ixingpan_aspect(soup):
         web.ctx.env['star_dict'][star_b].aspect_dict[star_a] = aspect_obj_reverse
 
 
-def parse_pan(bot_msg):
+def parse_pan(dist, birthday, is_dst):
     # soup_ixingpan = _fetch_ixingpan_soup(dist=dist, birthday_time=birthday, dst=is_dst, female=1)
     _parse_ixingpan_house(soup_ixingpan)
     _parse_ixingpan_star(soup_ixingpan)

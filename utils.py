@@ -4,9 +4,6 @@ import json
 from typing import Dict, Tuple, List
 import re
 
-import cpca
-import requests
-from bs4 import BeautifulSoup
 
 greeting_msg = '您好，我是「桥下指北」自助占星机器人，请叫我小乔~~'
 greeting_msg2 = '占星选择出生时间和地址，最好精确到小时和区县'
@@ -36,34 +33,6 @@ def init_llm_knowledge_dict():
                 llm_knowledge_dict[section_name] = {option_name: value}
 
     return llm_knowledge_dict
-
-
-def load_ixingpan_area():
-    area_dict = {'山东省':
-                     {'济南市':
-                          {'长清区': 1557, 'xx': 123},
-                      '烟台市':
-                          {'长岛县': 1611, '福山区': 123}}}
-    area_dict.clear()
-    with open('./file/ixingpan_area.json', 'r') as file:
-        json_data = json.load(file)
-        for province in json_data.keys():
-            if province not in area_dict:
-                area_dict[province] = {}
-
-            city_json = json_data[province].keys()
-            for city in city_json:
-                if city not in area_dict[province]:
-                    area_dict[province][city] = {'未选择': '0'}
-
-                area_vec = json_data[province][city].split(',')
-                for sub in area_vec:
-                    area = sub.split('|')[0]
-                    areaid = sub.split('|')[1]
-
-                    area_dict[province][city].update({area: areaid})
-
-    return area_dict
 
 
 class Recepted:
@@ -169,151 +138,6 @@ class Affliction:
         self.level_3 = []  # 第三档灾星: 土星 = 凯龙
 
 
-def _prepare_http_data(content, name=None) -> Tuple[str, str, str, str, str]:
-    """
-    获取http请求所需的参数：birthday, dist, is_dst, toffset, f'{province}{city}{area}'
-    :param content:
-    :param name:
-    :return: error_msg, birthday, dist, is_dst, toffset, f'{province}{city}{area}'
-    """
-    def _parse_location(inp_str) -> Tuple[str, str, str]:
-        df = cpca.transform([inp_str])
-
-        province = df.iloc[0]['省']
-        city = df.iloc[0]['市']
-        area = df.iloc[0]['区']
-
-        if area is None:
-            area = city
-
-        return province, city, area
-
-    def _parse_time_loc(text: str):
-        time_pattern = r'时间：(\d{4}-\d{2}-\d{2} \d{2}:\d{2})'
-        time_match = re.search(time_pattern, text)
-        time, location = '无', '无'
-        if time_match:
-            time = time_match.group(1)
-            print(time)
-
-        # 提取位置
-        location_pattern = r'位置：(.+)'
-        location_match = re.search(location_pattern, text)
-        if location_match:
-            location = location_match.group(1)
-            print(location)
-
-        return time, location
-
-    def _get_dist_by_location(target_province, target_city, target_district) -> Tuple[str, str]:
-        '''
-        根据 ixingpan_area.json文件、用户输入的省、市、区来查找 dist（爱星盘http参数）
-        :param target_province:
-        :param target_city:
-        :param target_district:
-        :return: [error_msg, dist_code]
-        '''
-
-        with open('./file/ixingpan_area.json', 'r') as file:
-            json_data = json.load(file)
-
-            error_msg, dist = '', ''
-            # 直辖市直接找 target_district, 找不到当前信息，用上一层的
-            if target_city == '市辖区':
-                if target_province in json_data:
-                    input_string = json_data[target_province][target_province]
-                    kv = {pair.split('|')[0]: pair.split('|')[1] for pair in input_string.split(',')}
-
-                    dist = kv[target_district] if target_district in kv else kv[target_province]
-                else:
-                    error_msg = f'未找到:{target_province}'
-
-                return error_msg, dist
-
-            # 非直辖市
-            for key, desc in zip([target_province, target_city, target_district], ['省份', '城市', '区/市(县)']):
-                if key not in json_data and desc in {'省份', '城市'}:
-                    return f'未找到{key}位置', ''
-
-                if desc == '区/市(县)':
-                    input_string = json_data
-                    kv = {pair.split('|')[0]: pair.split('|')[1] for pair in input_string.split(',')}
-
-                    if key in kv:
-                        return error_msg, kv[key]
-                    elif target_city in kv:
-                        return error_msg, kv[target_city]
-                    else:
-                        return f'未找到:{target_district}', ''
-
-                json_data = json_data[key]
-
-    def get_is_dst(loc, time_str):
-        print('开始执行夏令时检查...')
-        # 重庆（Chongqing）：Asia / Chongqing
-        # 天津（Tianjin）：Asia / Shanghai
-        # 香港（Hong
-        # Kong）：Asia / Hong_Kong
-        # 澳门（Macau）：Asia / Macau
-        # 台北（Taipei）：Asia / Taipei
-        # 乌鲁木齐（Urumqi）：Asia / Urumqi
-        # 哈尔滨（Harbin）：Asia / Harbin
-
-        from datetime import datetime
-        import pytz
-
-        print(f'inp time:{time_str}')
-
-        dt = datetime.strptime(time_str, "%Y-%m-%d %H:%M")
-        localized_dt = pytz.timezone('Asia/Shanghai').localize(dt)
-        is_dst = localized_dt.dst().total_seconds() != 0
-
-        print(f'夏令时检查结果, 是夏令时={is_dst}')
-
-        return is_dst
-
-    birthday, loc = _parse_time_loc(content)
-    province, city, area = _parse_location(loc)
-    print(f'prov:{province} city:{city} area:{area}')
-    print(f'birthday:{birthday}')
-
-    error_msg, dist = _get_dist_by_location(target_province=province, target_city=city, target_district=area)
-
-    # TODO: dynamic
-    is_dst = 0
-    if get_is_dst(city, birthday):
-        is_dst = 1
-
-    toffset = 'GMT_ADD_8'
-
-    return birthday, dist, is_dst, toffset, f'{province}{city}{area}'
-
-
-def _fetch_ixingpan_soup(female=1, dist='1550', birthday_time='1962-08-08 20:00', dst='0'):
-    # dst: Daylight Saving Time
-    birthday = birthday_time.split(' ')[0]
-    birth_time = birthday_time.split(' ')[1]
-
-    def generate_random_string():
-        import random, string
-        length = random.randint(3, 9)  # 随机生成长度在4到8之间的整数
-        characters = string.ascii_lowercase + string.digits  # 包含小写字母和数字的字符集
-        return ''.join(random.choice(characters) for _ in range(length))
-
-    new_name = generate_random_string()
-    url = f"https://xp.ixingpan.com/xp.php?type=natal&name={new_name}&sex={female}&dist={dist}&date={birthday}&time={birth_time}&dst={dst}&hsys=P"
-    # logger.debug(f'爱星盘请求串 {url}')
-
-    # 发送GET请求
-    response = requests.get(url, cookies={'xp_planets_natal': '0,1,2,3,4,5,6,7,8,9,25,26,27,28,15,19,10,29', 'xp_aspects_natal': '0:8,180:8,120:8,90:8,60:8'})
-
-    # 获取返回的HTML源码
-    html_str = response.text
-    soup = BeautifulSoup(html_str, 'html.parser')
-
-    return soup
-
-
 def _parse_ixingpan_star(soup):
     '''
     解析包括：
@@ -415,53 +239,6 @@ def _parse_ixingpan_star(soup):
                 c = Constellation(name=constellation)
                 c.star_vec.append(star)
                 web.ctx.env[SESS_KEY_CONST][constellation] = c
-
-
-def _parse_ixingpan_house(soup):
-    '''
-    解析包括：
-        宫头宫位
-    :param soup:
-    :return:
-    '''
-
-    star_ruler_dict = get_session(SESS_KEY_STAR_RULER)
-
-    tables = soup.find_all('table')
-
-    table = tables[6]
-    tbody = table.find('tbody')
-    trs = tbody.find_all('tr')
-    for tr in trs:
-        tds = tr.find_all('td')
-        if len(tds) != 5:
-            continue
-
-        house = tds[0].text.strip()
-        constellation = tds[1].text.strip()
-        lord = tds[2].text.strip()
-        lord_loc = tds[4].text.strip()
-
-        constellation = pattern_constellation.sub('', constellation).strip()
-
-        match = pattern_house.search(house)
-
-        if match:
-            house = int(match.group())
-        else:
-            house = -1
-
-        ruler_loc = int(lord_loc.replace('宫', ''))
-
-        house_obj = House(house_num=house, ruler=lord, ruler_loc=ruler_loc)
-        house_obj.constellation = constellation
-
-        web.ctx.env['house_dict'][house] = house_obj
-
-        if lord not in star_ruler_dict:
-            star_ruler_dict[lord] = []
-
-        star_ruler_dict[lord].append(house)
 
 
 def _parse_ixingpan_aspect(soup):

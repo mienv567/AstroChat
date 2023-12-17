@@ -8,10 +8,9 @@ from typing import Dict, List
 import streamlit as st
 import zhipuai
 from utils import greeting_msg, greeting_msg2
-from utils import init_llm_knowledge_dict, load_ixingpan_area
+from utils import init_llm_knowledge_dict
 from utils import time_loc_task, date_task, time_task, loc_task, confirm_task, ixingpan_task, moon_solar_asc_task
-from utils import _prepare_http_data, _fetch_ixingpan_soup
-from utils import prompt_time_loc
+from core import Core
 
 task_chain = [date_task, time_task, loc_task, confirm_task, ixingpan_task, moon_solar_asc_task]
 
@@ -130,7 +129,7 @@ if "history" not in st.session_state:
         st.session_state.areaid = '4515'
 
     st.session_state.llm_dict = init_llm_knowledge_dict()
-    st.session_state.area_dict = load_ixingpan_area()
+    # st.session_state.area_dict = load_ixingpan_area()
     print('llm_dict size:', len(st.session_state.llm_dict))
 
     init_session()
@@ -195,8 +194,8 @@ def on_loc_change():
     c = st.session_state.city_of_birth
     a = st.session_state.area_of_birth
 
-    if p in st.session_state.area_dict and c in st.session_state.area_dict[p] and a in st.session_state.area_dict[p][c]:
-        st.session_state.areaid = st.session_state.area_dict[p][c][a]
+    # if p in st.session_state.area_dict and c in st.session_state.area_dict[p] and a in st.session_state.area_dict[p][c]:
+    #     st.session_state.areaid = st.session_state.area_dict[p][c][a]
 
     # print(st.session_state.areaid, st.session_state.area_of_birth, option3)
 
@@ -227,6 +226,16 @@ st.markdown(
 def on_button_click():
     st.session_state.start_btn = 1
     update_birthday()
+
+    st.session_state.province_of_birth = '北美洲'
+    st.session_state.city_of_birth = '美国'
+    st.session_state.area_of_birth = '加利福尼亚 旧金山'
+    btime = f'{st.session_state.date_of_birth} {st.session_state.time_of_birth}'
+    print(btime)
+
+    core = Core(birthday=btime, province=st.session_state.province_of_birth, city=st.session_state.city_of_birth, area=st.session_state.area_of_birth)
+    st.session_state.core = core
+
 
 st.button("开始排盘", type='primary', on_click=on_button_click)
 

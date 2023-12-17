@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-
+import configparser
+import json
 import os
 import random
 import time
@@ -105,6 +106,55 @@ def fetch_chatglm_turbo_response(user_input):
     return response.events()
 
 
+def load_ixingpan_area():
+    area_dict = {'山东省':
+                     {'济南市':
+                          {'长清区': 1557, 'xx': 123},
+                      '烟台市':
+                          {'长岛县': 1611, '福山区': 123}}}
+    area_dict.clear()
+    with open('./file/ixingpan_area.json', 'r') as file:
+        json_data = json.load(file)
+        for province in json_data.keys():
+            if province not in area_dict:
+                area_dict[province] = {}
+
+            city_json = json_data[province].keys()
+            for city in city_json:
+                if city not in area_dict[province]:
+                    area_dict[province][city] = {'未选择': '0'}
+
+                area_vec = json_data[province][city].split(',')
+                for sub in area_vec:
+                    area = sub.split('|')[0]
+                    areaid = sub.split('|')[1]
+
+                    area_dict[province][city].update({area: areaid})
+
+    return area_dict
+
+
+def load_knowledge_file():
+    # Load knowledge_web.ini
+    config = configparser.ConfigParser()
+
+    knowledge_dict: Dict[str, Dict[str, str]] = {}
+    file_name = './file/knowledge.ini'
+    config.read(file_name)
+
+    # 遍历指定section的所有option
+    for section_name in config.sections():
+        for option_name in config.options(section_name):
+            value = config.get(section_name, option_name)
+
+            if section_name in knowledge_dict:
+                knowledge_dict[section_name][option_name] = value
+            else:
+                knowledge_dict[section_name] = {option_name: value}
+
+    st.session_state.knowledge_dict = knowledge_dict
+
+
 # 设置页面标题、图标和布局
 st.set_page_config(page_title="桥下指北", page_icon=":robot:")
 # st.set_page_config(page_title="桥下指北", page_icon=":robot:", layout="wide")
@@ -123,13 +173,26 @@ if "history" not in st.session_state:
         st.session_state.time_of_birth = datetime.time(12, 30)
         st.session_state.age = 0
         st.session_state.start_btn = 0
-        st.session_state.province_of_birth = '北美洲'
-        st.session_state.city_of_birth = '美国'
-        st.session_state.area_of_birth = '加利福尼亚 旧金山'
+        # st.session_state.province_of_birth = '北美洲'
+        # st.session_state.city_of_birth = '美国'
+        # st.session_state.area_of_birth = '加利福尼亚 旧金山'
         st.session_state.areaid = '4515'
 
+        # 防止location重置(没用)
+        st.session_state.province_index = 0
+        st.session_state.city_index = 0
+        st.session_state.area_index = 0
+
+        # 日月升
+        st.session_state.solar_moon_constell = ''
+        st.session_state.asc_constell = ''
+        st.session_state.asc_solar_constell = ''
+
+        load_knowledge_file()
+
+
     st.session_state.llm_dict = init_llm_knowledge_dict()
-    # st.session_state.area_dict = load_ixingpan_area()
+    st.session_state.area_dict = load_ixingpan_area()
     print('llm_dict size:', len(st.session_state.llm_dict))
 
     init_session()
@@ -194,21 +257,29 @@ def on_loc_change():
     c = st.session_state.city_of_birth
     a = st.session_state.area_of_birth
 
+    # st.session_state.province_index = list(st.session_state.area_dict.keys()).index(st.session_state.province_of_birth)
+    # st.session_state.city_index = list(st.session_state.area_dict[st.session_state.province_of_birth].keys()).index(st.session_state.city_of_birth)
+    # st.session_state.area_index = list(st.session_state.area_dict[st.session_state.province_of_birth][st.session_state.city_of_birth].keys()).index(st.session_state.area_of_birth)
+
     # if p in st.session_state.area_dict and c in st.session_state.area_dict[p] and a in st.session_state.area_dict[p][c]:
     #     st.session_state.areaid = st.session_state.area_dict[p][c][a]
 
     # print(st.session_state.areaid, st.session_state.area_of_birth, option3)
 
+
 with col_province:
     # 创建第一个下拉菜单
-    option1 = st.selectbox(label=':cn: 请选择诞生地', index=0, options=st.session_state.area_dict.keys(), key='province_of_birth', on_change=on_loc_change)
+    # option1 = st.selectbox(label=':cn: 请选择诞生地', options=st.session_state.area_dict.keys(), key='province_of_birth', on_change=on_loc_change)
+    option1 = st.selectbox(label=':cn: 请选择诞生地', index=st.session_state.province_index, options=st.session_state.area_dict.keys(), key='province_of_birth', on_change=on_loc_change)
 
 with col_city:
     # 根据第一个下拉菜单的选项，更新第二个下拉菜单的选项
-    option2 = st.selectbox(label='1', index=0, options=st.session_state.area_dict[option1].keys(), key='city_of_birth', on_change=on_loc_change, label_visibility='hidden')
+    # option2 = st.selectbox(label='1', options=st.session_state.area_dict[option1].keys(), key='city_of_birth', on_change=on_loc_change, label_visibility='hidden')
+    option2 = st.selectbox(label='1', index=st.session_state.city_index, options=st.session_state.area_dict[option1].keys(), key='city_of_birth', on_change=on_loc_change, label_visibility='hidden')
 
 with col_area:
-    option3 = st.selectbox(label='1', index=0, options=st.session_state.area_dict[option1][option2].keys(), key='area_of_birth', on_change=on_loc_change, label_visibility='hidden')
+    # option3 = st.selectbox(label='1', options=st.session_state.area_dict[option1][option2].keys(), key='area_of_birth', on_change=on_loc_change, label_visibility='hidden')
+    option3 = st.selectbox(label='1', index=st.session_state.area_index, options=st.session_state.area_dict[option1][option2].keys(), key='area_of_birth', on_change=on_loc_change, label_visibility='hidden')
 
 
 # ------------------------------- 搞Button 开始排盘 ----------------------
@@ -225,16 +296,31 @@ st.markdown(
 
 def on_button_click():
     st.session_state.start_btn = 1
+    # update_birthday()
+
+    p = st.session_state.province_of_birth
+    c = st.session_state.city_of_birth
+    a = st.session_state.area_of_birth
+    st.session_state.areaid = st.session_state.area_dict[p][c][a]
+
     update_birthday()
 
-    st.session_state.province_of_birth = '北美洲'
-    st.session_state.city_of_birth = '美国'
-    st.session_state.area_of_birth = '加利福尼亚 旧金山'
     btime = f'{st.session_state.date_of_birth} {st.session_state.time_of_birth}'
     print(btime)
 
     core = Core(birthday=btime, province=st.session_state.province_of_birth, city=st.session_state.city_of_birth, area=st.session_state.area_of_birth)
     st.session_state.core = core
+    st.session_state.core.execute()
+
+    asc_key, asc_solar_key = st.session_state.core.get_asc_const()
+    solar_moon_key = st.session_state.core.get_solar_moon_const()
+    st.session_state.solar_moon_constell = solar_moon_key
+    st.session_state.asc_constell = asc_key
+    st.session_state.asc_solar_constell = asc_solar_key
+
+    add_robot_history(st.session_state.knowledge_dict['日月星座组合-144种'][solar_moon_key])
+    print()
+    print()
 
 
 st.button("开始排盘", type='primary', on_click=on_button_click)

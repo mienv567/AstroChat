@@ -1,0 +1,674 @@
+<html><meta http-equiv="Content-type" content="text/html; charset=utf-8" /><link href="https://xp.ixingpan.com/statics/css/bootstrap.min.css" rel="stylesheet" type="text/css" /><link rel="stylesheet" href="https://xp.ixingpan.com/statics/css/style.css?v=2021030401"/><link rel="stylesheet" href="https://xp.ixingpan.com/statics/css/font-xp-gryph.css?v=2016083101" /><link rel="stylesheet" type="text/css" href="https://xp.ixingpan.com/statics/css/chart.css?v=2016082402" title="chart-default" media="all" /><link rel="stylesheet" type="text/css" href="https://xp.ixingpan.com/statics/css/graphy-chart.css?v=2016062801" id="chartMode"/><link rel="stylesheet" href="https://xp.ixingpan.com/statics/css/chart-extend.css?v=2016082402" id="aspect-line-type-css"/><div style="width: 100%;margin:0px;padding:0px"><div id="achart" class="text-center" style="margin: auto;padding:5px 10px 15px 5px;"><svg id="chart" version="1.0" viewbox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" xmlns:math="http://exslt.org/math" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>
+  ixingpan.com
+ </title>
+ <defs>
+  <marker id="Arrow" markerheight="14" markerunits="strokeWidth" markerwidth="14" orient="auto" refx="5" refy="5" viewbox="-2 -2 14 14">
+   <path d="M 0 0 L 5 5 L 0 10">
+   </path>
+  </marker>
+  <g id="dot">
+   <circle cx="0" cy="0" r="0.7">
+   </circle>
+  </g>
+ </defs>
+ <g class="classic" id="main" transform="
+                                                scale(1.15),
+                                                translate(-37.5,-37.5)
+                                        ">
+  <g id="chartbody">
+   <circle cx="300" cy="300" id="hcircle" r="250">
+   </circle>
+  </g>
+  <g id="houses">
+   <circle cx="300" cy="300" id="hcircle_c" r="255">
+   </circle>
+   <circle cx="300" cy="300" id="hcirclemin_c" r="230">
+   </circle>
+   <circle cx="300" cy="300" id="hcircle" r="100">
+   </circle>
+   <circle class="zoomin" cx="300" cy="300" id="hcirclemin" r="80">
+   </circle>
+   <path class="origin" d="M 300,295 L 300,305">
+   </path>
+   <path class="origin" d="M 295,300 L 305,300">
+   </path>
+  </g>
+  <g id="aspects">
+   <path class="Conjunction Sun Mars SunMars Conjunction_2 OrbLevel4" d="M310.005980610647,218.612775252996 A 149,149 0 0 1 322.61386253876,221.179867920194" title="Conjunction between Sun and Mars">
+   </path>
+   <line class="Sextile Sun Saturn SunSaturn Sextile_2 OrbLevel3" title="Sextile between Sun and Saturn" x1="309.76193230307" x2="231.713263992313" y1="220.597829515118" y2="258.323607576753">
+   </line>
+   <line class="Square Sun Neptune SunNeptune Square_2 OrbLevel1" title="Square between Sun and Neptune" x1="309.76193230307" x2="220.908476279326" y1="220.597829515118" y2="287.977900535178">
+   </line>
+   <line class="Square Sun Juno SunJuno Square_2 OrbLevel4" title="Square between Sun and Juno" x1="309.76193230307" x2="377.620095081278" y1="220.597829515118" y2="319.368036544096">
+   </line>
+   <line class="Trine Sun MeanNode SunMeanNode Trine_2 OrbLevel3" title="Trine between Sun and MeanNode" x1="309.76193230307" x2="223.916456568201" y1="220.597829515118" y2="324.724368927469">
+   </line>
+   <line class="Square Sun Asc SunAsc Square_2 OrbLevel4" title="Square between Sun and Asc" x1="309.76193230307" x2="220" y1="220.597829515118" y2="299.999999712817">
+   </line>
+   <path class="Conjunction Sun MC SunMC Conjunction_2 OrbLevel3" d="M310.005980610647,218.612775252996 A 149,149 0 0 1 302.10223590501,218.026951964687" title="Conjunction between Sun and MC">
+   </path>
+   <line class="Square Sun Des SunDes Square_2 OrbLevel4" title="Square between Sun and Des" x1="309.76193230307" x2="380" y1="220.597829515118" y2="300.000000574363">
+   </line>
+   <line class="Opposition Sun IC SunIC Opposition_2 OrbLevel3" title="Opposition between Sun and IC" x1="309.76193230307" x2="297.94903842854" y1="220.597829515118" y2="379.973705407668">
+   </line>
+   <line class="Opposition Sun PartOfFortun SunPartOfFortun Opposition_2 OrbLevel3" title="Opposition between Sun and PartOfFortun" x1="309.76193230307" x2="281.756939986313" y1="220.597829515118" y2="377.892173941526">
+   </line>
+   <line class="Sextile Moon Mercury MoonMercury Sextile_2 OrbLevel4" title="Sextile between Moon and Mercury" x1="224.915997927273" x2="297.057068536507" y1="272.388541640421" y2="220.054148610443">
+   </line>
+   <line class="Trine Moon Venus MoonVenus Trine_2 OrbLevel2" title="Trine between Moon and Venus" x1="224.915997927273" x2="358.46038476174" y1="272.388541640421" y2="245.388797728769">
+   </line>
+   <line class="Square Moon Mars MoonMars Square_2 OrbLevel2" title="Square between Moon and Mars" x1="224.915997927273" x2="322.062304915864" y1="272.388541640421" y2="223.102310166043">
+   </line>
+   <line class="Sextile Moon Jupiter MoonJupiter Sextile_2 OrbLevel4" title="Sextile between Moon and Jupiter" x1="224.915997927273" x2="232.356254552137" y1="272.388541640421" y2="342.712102521237">
+   </line>
+   <line class="Sextile Moon Uranus MoonUranus Sextile_2 OrbLevel3" title="Sextile between Moon and Uranus" x1="224.915997927273" x2="244.587378082307" y1="272.388541640421" y2="357.701311356042">
+   </line>
+   <line class="Opposition Moon Juno MoonJuno Opposition_2 OrbLevel3" title="Opposition between Moon and Juno" x1="224.915997927273" x2="377.620095081278" y1="272.388541640421" y2="319.368036544096">
+   </line>
+   <line class="Square Moon PartOfFortun MoonPartOfFortun Square_2 OrbLevel4" title="Square between Moon and PartOfFortun" x1="224.915997927273" x2="281.756939986313" y1="272.388541640421" y2="377.892173941526">
+   </line>
+   <line class="Trine Mercury Jupiter MercuryJupiter Trine_2 OrbLevel1" title="Trine between Mercury and Jupiter" x1="297.057068536507" x2="232.356254552137" y1="220.054148610443" y2="342.712102521237">
+   </line>
+   <line class="Sextile Mercury Saturn MercurySaturn Sextile_2 OrbLevel2" title="Sextile between Mercury and Saturn" x1="297.057068536507" x2="231.713263992313" y1="220.054148610443" y2="258.323607576753">
+   </line>
+   <line class="Square Mercury Asc MercuryAsc Square_2 OrbLevel2" title="Square between Mercury and Asc" x1="297.057068536507" x2="220" y1="220.054148610443" y2="299.999999712817">
+   </line>
+   <path class="Conjunction Mercury MC MercuryMC Conjunction_2 OrbLevel2" d="M296.98349524992,218.055502325704 A 149,149 0 0 1 302.10223590501,218.026951964687" title="Conjunction between Mercury and MC">
+   </path>
+   <line class="Square Mercury Des MercuryDes Square_2 OrbLevel2" title="Square between Mercury and Des" x1="297.057068536507" x2="380" y1="220.054148610443" y2="300.000000574363">
+   </line>
+   <line class="Opposition Mercury IC MercuryIC Opposition_2 OrbLevel2" title="Opposition between Mercury and IC" x1="297.057068536507" x2="297.94903842854" y1="220.054148610443" y2="379.973705407668">
+   </line>
+   <line class="Opposition Venus Uranus VenusUranus Opposition_2 OrbLevel2" title="Opposition between Venus and Uranus" x1="358.46038476174" x2="244.587378082307" y1="245.388797728769" y2="357.701311356042">
+   </line>
+   <line class="Sextile Venus Juno VenusJuno Sextile_2 OrbLevel2" title="Sextile between Venus and Juno" x1="358.46038476174" x2="377.620095081278" y1="245.388797728769" y2="319.368036544096">
+   </line>
+   <line class="Square Mars Neptune MarsNeptune Square_2 OrbLevel4" title="Square between Mars and Neptune" x1="322.062304915864" x2="220.908476279326" y1="223.102310166043" y2="287.977900535178">
+   </line>
+   <line class="Trine Mars Chiron MarsChiron Trine_2 OrbLevel2" title="Trine between Mars and Chiron" x1="322.062304915864" x2="221.721994236012" y1="223.102310166043" y2="316.509203906096">
+   </line>
+   <line class="Square Mars Juno MarsJuno Square_2 OrbLevel1" title="Square between Mars and Juno" x1="322.062304915864" x2="377.620095081278" y1="223.102310166043" y2="319.368036544096">
+   </line>
+   <line class="Trine Mars MeanNode MarsMeanNode Trine_2 OrbLevel3" title="Trine between Mars and MeanNode" x1="322.062304915864" x2="223.916456568201" y1="223.102310166043" y2="324.724368927469">
+   </line>
+   <line class="Opposition Mars PartOfFortun MarsPartOfFortun Opposition_2 OrbLevel2" title="Opposition between Mars and PartOfFortun" x1="322.062304915864" x2="281.756939986313" y1="223.102310166043" y2="377.892173941526">
+   </line>
+   <line class="Sextile Jupiter Saturn JupiterSaturn Sextile_2 OrbLevel2" title="Sextile between Jupiter and Saturn" x1="232.356254552137" x2="231.713263992313" y1="342.712102521237" y2="258.323607576753">
+   </line>
+   <line class="Square Jupiter Pluto JupiterPluto Square_2 OrbLevel4" title="Square between Jupiter and Pluto" x1="232.356254552137" x2="265.699829372738" y1="342.712102521237" y2="227.726226783565">
+   </line>
+   <line class="Trine Jupiter MC JupiterMC Trine_2 OrbLevel2" title="Trine between Jupiter and MC" x1="232.356254552137" x2="302.050961858546" y1="342.712102521237" y2="220.026294599695">
+   </line>
+   <line class="Sextile Jupiter IC JupiterIC Sextile_2 OrbLevel2" title="Sextile between Jupiter and IC" x1="232.356254552137" x2="297.94903842854" y1="342.712102521237" y2="379.973705407668">
+   </line>
+   <line class="Sextile Saturn MC SaturnMC Sextile_2 OrbLevel1" title="Sextile between Saturn and MC" x1="231.713263992313" x2="302.050961858546" y1="258.323607576753" y2="220.026294599695">
+   </line>
+   <line class="Trine Saturn IC SaturnIC Trine_2 OrbLevel1" title="Trine between Saturn and IC" x1="231.713263992313" x2="297.94903842854" y1="258.323607576753" y2="379.973705407668">
+   </line>
+   <line class="Sextile Uranus Neptune UranusNeptune Sextile_2 OrbLevel3" title="Sextile between Uranus and Neptune" x1="244.587378082307" x2="220.908476279326" y1="357.701311356042" y2="287.977900535178">
+   </line>
+   <line class="Trine Uranus Juno UranusJuno Trine_2 OrbLevel1" title="Trine between Uranus and Juno" x1="244.587378082307" x2="377.620095081278" y1="357.701311356042" y2="319.368036544096">
+   </line>
+   <line class="Sextile Neptune Pluto NeptunePluto Sextile_2 OrbLevel3" title="Sextile between Neptune and Pluto" x1="220.908476279326" x2="265.699829372738" y1="287.977900535178" y2="227.726226783565">
+   </line>
+   <line class="Opposition Neptune Juno NeptuneJuno Opposition_2 OrbLevel3" title="Opposition between Neptune and Juno" x1="220.908476279326" x2="377.620095081278" y1="287.977900535178" y2="319.368036544096">
+   </line>
+   <line class="Square Neptune MC NeptuneMC Square_2 OrbLevel4" title="Square between Neptune and MC" x1="220.908476279326" x2="302.050961858546" y1="287.977900535178" y2="220.026294599695">
+   </line>
+   <line class="Square Neptune IC NeptuneIC Square_2 OrbLevel4" title="Square between Neptune and IC" x1="220.908476279326" x2="297.94903842854" y1="287.977900535178" y2="379.973705407668">
+   </line>
+   <line class="Square Neptune PartOfFortun NeptunePartOfFortun Square_2 OrbLevel3" title="Square between Neptune and PartOfFortun" x1="220.908476279326" x2="281.756939986313" y1="287.977900535178" y2="377.892173941526">
+   </line>
+   <line class="Square Pluto MeanNode PlutoMeanNode Square_2 OrbLevel4" title="Square between Pluto and MeanNode" x1="265.699829372738" x2="223.916456568201" y1="227.726226783565" y2="324.724368927469">
+   </line>
+   <line class="Sextile Pluto Asc PlutoAsc Sextile_2 OrbLevel3" title="Sextile between Pluto and Asc" x1="265.699829372738" x2="220" y1="227.726226783565" y2="299.999999712817">
+   </line>
+   <line class="Trine Pluto Des PlutoDes Trine_2 OrbLevel3" title="Trine between Pluto and Des" x1="265.699829372738" x2="380" y1="227.726226783565" y2="300.000000574363">
+   </line>
+   <line class="Sextile Chiron PartOfFortun ChironPartOfFortun Sextile_2 OrbLevel3" title="Sextile between Chiron and PartOfFortun" x1="221.721994236012" x2="281.756939986313" y1="316.509203906096" y2="377.892173941526">
+   </line>
+   <line class="Square Juno PartOfFortun JunoPartOfFortun Square_2 OrbLevel1" title="Square between Juno and PartOfFortun" x1="377.620095081278" x2="281.756939986313" y1="319.368036544096" y2="377.892173941526">
+   </line>
+   <path class="Conjunction MeanNode Chiron MeanNodeChiron Conjunction_2 OrbLevel4" d="M222.014367982406,325.342478150656 A 149,149 0 0 1 219.765044091912,316.921934003748" title="Conjunction between MeanNode and Chiron">
+   </path>
+   <line class="Sextile MeanNode PartOfFortun MeanNodePartOfFortun Sextile_2 OrbLevel1" title="Sextile between MeanNode and PartOfFortun" x1="223.916456568201" x2="281.756939986313" y1="324.724368927469" y2="377.892173941526">
+   </line>
+   <line class="Square Asc MC AscMC Square_2 OrbLevel1" title="Square between Asc and MC" x1="220" x2="302.050961858546" y1="299.999999712817" y2="220.026294599695">
+   </line>
+   <line class="Square Asc IC AscIC Square_2 OrbLevel1" title="Square between Asc and IC" x1="220" x2="297.94903842854" y1="299.999999712817" y2="379.973705407668">
+   </line>
+   <line class="Square MC Des MCDes Square_2 OrbLevel1" title="Square between MC and Des" x1="302.050961858546" x2="380" y1="220.026294599695" y2="300.000000574363">
+   </line>
+   <line class="Square Des IC DesIC Square_2 OrbLevel1" title="Square between Des and IC" x1="380" x2="297.94903842854" y1="300.000000574363" y2="379.973705407668">
+   </line>
+  </g>
+  <g id="cuspids">
+   <line class="House cuspid1" x1="220" x2="70" y1="299.999999712817" y2="299.999999174348">
+   </line>
+   <line class="House cuspid1" x1="45" x2="40" y1="299.999999084603" y2="299.999999066654">
+   </line>
+   <text class="House House1 xp_symbol xp_symbol_house xp_symbol_house_c" id="xp_h_1" x="210.04123039282" y="333.698610520259">
+    1
+   </text>
+   <g id="Aries">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_0" x="50" y="306.99999912768">
+     A
+    </text>
+   </g>
+   <g>
+    <text class="house_sign_degree_hours" x="50.9246884376216" y="282.821153667458">
+     03°
+    </text>
+    <text class="house_sign_degree_minutes" x="50.9246882855663" y="325.178844594542">
+     34′
+    </text>
+   </g>
+   <line class="House cuspid2" x1="237.422369894155" x2="120.089313445696" y1="349.840146572177" y2="443.290421395008">
+   </line>
+   <text class="House House2 xp_symbol xp_symbol_house xp_symbol_house_c" id="xp_h_2" x="239.787224160049" y="375.07425260984">
+    2
+   </text>
+   <g id="Taurus">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_1" x="102.920448553497" y="458.389445212987">
+     B
+    </text>
+   </g>
+   <g>
+    <text class="house_sign_degree_hours" x="90.4492991050289" y="438.246838200965">
+     12°
+    </text>
+    <text class="house_sign_degree_minutes" x="116.838218158339" y="471.379887138124">
+     07′
+    </text>
+   </g>
+   <line class="House cuspid3" x1="267.183097759391" x2="205.65140605825" y1="372.959241548486" y2="509.757819451898">
+   </line>
+   <text class="House House3 xp_symbol xp_symbol_house xp_symbol_house_c" id="xp_h_3" x="274.993885599301" y="391.748250048569">
+    3
+   </text>
+   <g id="Gemini">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_2" x="193.318659444152" y="528.613696203527">
+     C
+    </text>
+   </g>
+   <g>
+    <text class="house_sign_degree_hours" x="174.383070765062" y="516.082587920069">
+     09°
+    </text>
+    <text class="house_sign_degree_minutes" x="213.012883312377" y="533.458190448719">
+     21′
+    </text>
+   </g>
+   <line class="House cuspid4" x1="297.94903842854" x2="294.103485482053" y1="379.973705407668" y2="529.924403047044">
+   </line>
+   <line class="House cuspid4" x1="293.462559990972" x2="293.334374892756" y1="554.91618598694" y2="559.91454257492">
+   </line>
+   <text class="House House4 xp_symbol xp_symbol_house xp_symbol_house_c" id="xp_h_4" x="310.727297941645" y="392.615191132529">
+    4
+   </text>
+   <g id="Cancer">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_3" x="286.770204226691" y="549.92013017579">
+     D
+    </text>
+   </g>
+   <g>
+    <text class="house_sign_degree_hours" x="265.622026130683" y="545.45278326582">
+     02°
+    </text>
+    <text class="house_sign_degree_minutes" x="307.965794830078" y="546.53870822016">
+     06′
+    </text>
+   </g>
+   <line class="House cuspid5" x1="329.446085973166" x2="384.657497172852" y1="374.383654258586" y2="513.853005993436">
+   </line>
+   <text class="House House5 xp_symbol xp_symbol_house xp_symbol_house_c" id="xp_h_5" x="347.587225835743" y="377.038234363247">
+    5
+   </text>
+   <g id="Cancer">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_3" x="382.442486143492" y="532.940349810456">
+     D
+    </text>
+   </g>
+   <g>
+    <text class="house_sign_degree_hours" x="362.410131499116" y="536.876004872283">
+     25°
+    </text>
+    <text class="house_sign_degree_minutes" x="401.79412946302" y="521.285152263986">
+     10′
+    </text>
+   </g>
+   <line class="House cuspid6" x1="361.203108409499" x2="475.958936677311" y1="351.518729807858" y2="448.116348197592">
+   </line>
+   <text class="House House6 xp_symbol xp_symbol_house xp_symbol_house_c" id="xp_h_6" x="379.548254532576" y="334.847895479185">
+    6
+   </text>
+   <g id="Leo">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_4" x="478.904441793854" y="463.488141791369">
+     E
+    </text>
+   </g>
+   <g>
+    <text class="house_sign_degree_hours" x="464.558179054876" y="476.095296854316">
+     23°
+    </text>
+    <text class="house_sign_degree_minutes" x="491.835859481841" y="443.690017481986">
+     29′
+    </text>
+   </g>
+   <line class="House cuspid7" x1="380" x2="530" y1="300.000000574363" y2="300.000001651293">
+   </line>
+   <line class="House cuspid7" x1="555" x2="560" y1="300.000001830781" y2="300.000001866679">
+   </line>
+   <text class="House House7 xp_symbol xp_symbol_house xp_symbol_house_c" id="xp_h_7" x="379.958769713794" y="274.301389784731">
+    7
+   </text>
+   <g id="Libra">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_6" x="536" y="307.000001744627">
+     G
+    </text>
+   </g>
+   <g>
+    <text class="house_sign_degree_hours" x="535.075311486352" y="325.17884720153">
+     03°
+    </text>
+    <text class="house_sign_degree_minutes" x="535.07531179046" y="282.821156274446">
+     34′
+    </text>
+   </g>
+   <line class="House cuspid8" x1="362.577630284761" x2="479.910687068687" y1="250.159853652464" y2="156.709579250834">
+   </line>
+   <text class="House House8 xp_symbol xp_symbol_house xp_symbol_house_c" id="xp_h_8" x="350.212776095087" y="232.925747588358">
+    8
+   </text>
+   <g id="Scorpio">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_7" x="483.07955198996" y="155.610555469359">
+     H
+    </text>
+   </g>
+   <g>
+    <text class="house_sign_degree_hours" x="495.55070137689" y="169.753162526151">
+     12°
+    </text>
+    <text class="house_sign_degree_minutes" x="469.16178244252" y="136.62011349426">
+     07′
+    </text>
+   </g>
+   <line class="House cuspid9" x1="332.816902502517" x2="394.348594694737" y1="227.04075856932" y2="90.2421808867944">
+   </line>
+   <text class="House House9 xp_symbol xp_symbol_house xp_symbol_house_c" id="xp_h_9" x="315.006114715703" y="216.25175002325">
+    9
+   </text>
+   <g id="Sagittarius">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_8" x="392.681341351396" y="85.3863041543089">
+     I
+    </text>
+   </g>
+   <g>
+    <text class="house_sign_degree_hours" x="411.616929996271" y="91.9174125057416">
+     09°
+    </text>
+    <text class="house_sign_degree_minutes" x="372.98711751133" y="74.5418098384181">
+     21′
+    </text>
+   </g>
+   <line class="House cuspid10" x1="302.050961858546" x2="305.89651534332" y1="220.026294599695" y2="70.0755969741228">
+   </line>
+   <line class="House cuspid10" x1="306.537440924116" x2="306.665626040275" y1="45.0838140365275" y2="40.0854574490084">
+   </line>
+   <text class="House House10 xp_symbol xp_symbol_house xp_symbol_house_c" id="xp_h_10" x="279.272702376465" y="215.384808811013">
+    10
+   </text>
+   <g id="Capricorn">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_9" x="299.229796645334" y="64.0798698465732">
+     J
+    </text>
+   </g>
+   <g>
+    <text class="house_sign_degree_hours" x="320.377974736074" y="62.5472168324604">
+     02°
+    </text>
+    <text class="house_sign_degree_minutes" x="278.034206040577" y="61.4612917261162">
+     06′
+    </text>
+   </g>
+   <line class="House cuspid11" x1="270.553914293856" x2="215.342503594836" y1="225.616345635708" y2="86.1469937026611">
+   </line>
+   <text class="House House11 xp_symbol xp_symbol_house xp_symbol_house_c" id="xp_h_11" x="242.412774426449" y="230.961765447976">
+    11
+   </text>
+   <g id="Capricorn">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_9" x="203.557514667588" y="81.0596498684637">
+     J
+    </text>
+   </g>
+   <g>
+    <text class="house_sign_degree_hours" x="223.589869336861" y="71.1239948785493">
+     25°
+    </text>
+    <text class="house_sign_degree_minutes" x="184.205871316989" y="86.7148473454653">
+     10′
+    </text>
+   </g>
+   <line class="House cuspid12" x1="238.796891775442" x2="124.041063854396" y1="248.481269972436" y2="151.883651170752">
+   </line>
+   <text class="House House12 xp_symbol xp_symbol_house xp_symbol_house_c" id="xp_h_12" x="210.451745578162" y="273.152104217304">
+    12
+   </text>
+   <g id="Aquarius">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_10" x="107.095558767906" y="150.511857541273">
+     K
+    </text>
+   </g>
+   <g>
+    <text class="house_sign_degree_hours" x="121.44182156291" y="131.904702529826">
+     23°
+    </text>
+    <text class="house_sign_degree_minutes" x="94.1641410196167" y="164.309981804235">
+     29′
+    </text>
+   </g>
+  </g>
+  <g class="single-chart" id="planets">
+   <use class="dot Chiron" title="Chiron" x="221.721994236012" xlink:href="#dot" y="316.509203906096">
+   </use>
+   <g id="Chiron">
+    <text class="xp_symbol xp_symbol_planet xp_symbol_planet_c Chiron" id="xp_p_15" x="87.5202348695314" y="350.336660253502">
+     \
+    </text>
+   </g>
+   <text class="house_sign_degree_hours" x="114.939061814877" y="342.764803935194">
+    15°
+   </text>
+   <text class="house_sign_degree_minutes" x="165.90586527327" y="332.859281591537">
+    29′
+   </text>
+   <g id="Aries">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_0" x="141.400938616124" y="338.605677714539">
+     A
+    </text>
+   </g>
+   <text class="xp_symbol xp_symbol_sign xp_house_sign_r" x="188.496891642217" y="327.938345663839">
+    Ú
+   </text>
+   <line class="Chiron" x1="74.9507334285343" x2="80.8215838608334" y1="347.463961230026" y2="346.225770937068">
+   </line>
+   <use class="dot Juno" title="Juno" x="377.620095081278" xlink:href="#dot" y="319.368036544096">
+   </use>
+   <g id="Juno">
+    <text class="xp_symbol xp_symbol_planet xp_symbol_planet_c Juno" id="xp_p_19" x="496.752749588354" y="357.841095928251">
+     `
+    </text>
+   </g>
+   <text class="house_sign_degree_hours" x="471.555967498422" y="349.304383594619">
+    19°
+   </text>
+   <text class="house_sign_degree_minutes" x="428.983910449656" y="337.683561668162">
+    34′
+   </text>
+   <g id="Virgo">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_5" x="449.299687785523" y="344.251872174589">
+     F
+    </text>
+   </g>
+   <line class="Juno" x1="523.157773358673" x2="517.336266227577" y1="355.683105064275" y2="354.230502323468">
+   </line>
+   <use class="dot MeanNode" title="MeanNode" x="223.916456568201" xlink:href="#dot" y="324.724368927469">
+   </use>
+   <g id="MeanNode">
+    <text class="xp_symbol xp_symbol_planet xp_symbol_planet_c MeanNode" id="xp_p_10" x="95.5512472001024" y="378.512166921196">
+     W
+    </text>
+   </g>
+   <text class="house_sign_degree_hours" x="121.937515417232" y="367.317745459899">
+    21°
+   </text>
+   <text class="house_sign_degree_minutes" x="171.068658914352" y="350.972107306483">
+    35′
+   </text>
+   <g id="Aries">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_0" x="147.443319321982" y="359.804392254995">
+     A
+    </text>
+   </g>
+   <text class="xp_symbol xp_symbol_sign xp_house_sign_r" x="192.933069881961" y="343.501958870756">
+    Ú
+   </text>
+   <line class="MeanNode" x1="81.2598126335788" x2="89.3879970134426" y1="371.082560666474" y2="376.279644715942">
+   </line>
+   <use class="dot Venus" title="Venus" x="358.46038476174" xlink:href="#dot" y="245.388797728769">
+   </use>
+   <g id="Venus">
+    <text class="xp_symbol xp_symbol_planet xp_symbol_planet_c Venus" id="xp_p_3" x="446.458509999569" y="163.64559403802">
+     P
+    </text>
+   </g>
+   <text class="house_sign_degree_hours" x="427.728130142481" y="180.07687480456">
+    16°
+   </text>
+   <text class="house_sign_degree_minutes" x="396.651899285437" y="212.843596167298">
+    38′
+   </text>
+   <g id="Scorpio">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_7" x="411.459259904438" y="198.14287551432">
+     H
+    </text>
+   </g>
+   <line class="Venus" x1="468.073606190004" x2="463.689077332873" y1="142.992793470212" y2="147.088633640554">
+   </line>
+   <use class="dot Mars" title="Mars" x="322.062304915864" xlink:href="#dot" y="223.102310166043">
+   </use>
+   <g id="Mars">
+    <text class="xp_symbol xp_symbol_planet xp_symbol_planet_c Mars" id="xp_p_4" x="350.913550404142" y="105.143564185863">
+     Q
+    </text>
+   </g>
+   <text class="house_sign_degree_hours" x="344.467522495038" y="129.096534504823">
+    17°
+   </text>
+   <text class="house_sign_degree_minutes" x="335.23013954552" y="175.235148405197">
+    34′
+   </text>
+   <g id="Sagittarius">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_8" x="339.57305220883" y="154.127062577935">
+     I
+    </text>
+   </g>
+   <line class="Mars" x1="363.429126633108" x2="361.774453764418" y1="78.9191417273734" y2="84.6864684649202">
+   </line>
+   <use class="dot Sun" title="Sun" x="309.76193230307" xlink:href="#dot" y="220.597829515118">
+   </use>
+   <g id="Sun">
+    <text class="xp_symbol xp_symbol_planet xp_symbol_planet_c Sun" id="xp_p_0" x="318.62507229556" y="98.5693024771847">
+     M
+    </text>
+   </g>
+   <text class="house_sign_degree_hours" x="316.330420143274" y="123.367535015832">
+    26°
+   </text>
+   <text class="house_sign_degree_minutes" x="314.473260761431" y="171.008837306762">
+    34′
+   </text>
+   <g id="Sagittarius">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_8" x="315.279816298564" y="149.180713292358">
+     I
+    </text>
+   </g>
+   <line class="Sun" x1="328.065555371328" x2="327.333410448597" y1="71.7187598559642" y2="77.6739226423304">
+   </line>
+   <use class="dot Mercury" title="Mercury" x="297.057068536507" xlink:href="#dot" y="220.054148610443">
+   </use>
+   <g id="Mercury">
+    <text class="xp_symbol xp_symbol_planet xp_symbol_planet_c Mercury" id="xp_p_2" x="260.181114183277" y="99.5803270329719">
+     O
+    </text>
+   </g>
+   <text class="house_sign_degree_hours" x="265.400685216855" y="124.248570700161">
+    05°
+   </text>
+   <text class="house_sign_degree_minutes" x="276.902144832106" y="171.658781664053">
+    41′
+   </text>
+   <g id="Capricorn">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_9" x="271.307695433132" y="149.941388910522">
+     J
+    </text>
+   </g>
+   <text class="xp_symbol xp_symbol_sign xp_house_sign_r" x="283.871472596477" y="189.425323503927">
+    Ú
+   </text>
+   <line class="Mercury" x1="291.539072042458" x2="264.993188462162" y1="70.1556772550227" y2="78.7523488351701">
+   </line>
+   <use class="dot Pluto" title="Pluto" x="265.699829372738" xlink:href="#dot" y="227.726226783565">
+   </use>
+   <g id="Pluto">
+    <text class="xp_symbol xp_symbol_planet xp_symbol_planet_c Pluto" id="xp_p_9" x="202.962052103436" y="117.281345306858">
+     V
+    </text>
+   </g>
+   <text class="house_sign_degree_hours" x="215.538359690137" y="139.673743767405">
+    28°
+   </text>
+   <text class="house_sign_degree_minutes" x="240.118462066495" y="183.038007697266">
+    58′
+   </text>
+   <g id="Capricorn">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_9" x="228.257163011157" y="163.259297897541">
+     J
+    </text>
+   </g>
+   <line class="Pluto" x1="201.387009446621" x2="203.959522243665" y1="92.2129020027492" y2="97.6334349939819">
+   </line>
+   <use class="dot Saturn" title="Saturn" x="231.713263992313" xlink:href="#dot" y="258.323607576753">
+   </use>
+   <g id="Saturn">
+    <text class="xp_symbol xp_symbol_planet xp_symbol_planet_c Saturn" id="xp_p_6" x="113.747317979822" y="197.599469888977">
+     S
+    </text>
+   </g>
+   <text class="house_sign_degree_hours" x="137.794091382416" y="209.665252331823">
+    02°
+   </text>
+   <text class="house_sign_degree_minutes" x="182.766132987028" y="234.671087785771">
+    11′
+   </text>
+   <g id="Pisces">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_11" x="161.133696384818" y="223.689124964088">
+     L
+    </text>
+   </g>
+   <line class="Saturn" x1="103.6756339779" x2="108.797139178476" y1="180.180371783166" y2="183.306101214909">
+   </line>
+   <use class="dot Moon" title="Moon" x="224.915997927273" xlink:href="#dot" y="272.388541640421">
+   </use>
+   <g id="Moon">
+    <text class="xp_symbol xp_symbol_planet xp_symbol_planet_c Moon" id="xp_p_1" x="95.9044945590923" y="234.519921806105">
+     N
+    </text>
+   </g>
+   <text class="house_sign_degree_hours" x="122.245345258638" y="241.838789002463">
+    13°
+   </text>
+   <text class="house_sign_degree_minutes" x="171.295746502274" y="258.40566401821">
+    23′
+   </text>
+   <g id="Pisces">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_11" x="147.709095906365" y="251.467369739831">
+     L
+    </text>
+   </g>
+   <line class="Moon" x1="84.1334940409106" x2="89.7647941963651" y1="220.61705721621" y2="222.687916593179">
+   </line>
+   <use class="dot Jupiter" title="Jupiter" x="232.356254552137" xlink:href="#dot" y="342.712102521237">
+   </use>
+   <g id="Jupiter">
+    <text class="xp_symbol xp_symbol_planet xp_symbol_planet_c Jupiter" id="xp_p_5" x="115.435168199359" y="419.119269118247">
+     R
+    </text>
+   </g>
+   <text class="house_sign_degree_hours" x="139.264932288013" y="402.70393451733">
+    05°
+   </text>
+   <text class="house_sign_degree_minutes" x="183.851179556731" y="377.076673004588">
+    51′
+   </text>
+   <g id="Taurus">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_1" x="162.40360274047" y="390.356402479443">
+     B
+    </text>
+   </g>
+   <text class="xp_symbol xp_symbol_sign xp_house_sign_r" x="203.916569100598" y="365.932548655794">
+    Ú
+   </text>
+   <line class="Jupiter" x1="105.524231837393" x2="110.597512745983" y1="422.797294748557" y2="419.593887059464">
+   </line>
+   <use class="dot Neptune" title="Neptune" x="220.908476279326" xlink:href="#dot" y="287.977900535178">
+   </use>
+   <g id="Neptune">
+    <text class="xp_symbol xp_symbol_planet xp_symbol_planet_c Neptune" id="xp_p_8" x="85.3847502332309" y="275.441988904842">
+     U
+    </text>
+   </g>
+   <text class="house_sign_degree_hours" x="113.078139488958" y="277.49944747422">
+    24°
+   </text>
+   <text class="house_sign_degree_minutes" x="164.533053721363" y="284.712707153113">
+    56′
+   </text>
+   <g id="Pisces">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_11" x="139.794240651669" y="282.256353556976">
+     L
+    </text>
+   </g>
+   <line class="Neptune" x1="72.6118693030625" x2="78.543733582113" y1="265.436464038637" y2="266.338121498498">
+   </line>
+   <use class="dot Uranus" title="Uranus" x="244.587378082307" xlink:href="#dot" y="357.701311356042">
+   </use>
+   <g id="Uranus">
+    <text class="xp_symbol xp_symbol_planet xp_symbol_planet_c Uranus" id="xp_p_7" x="147.541867466057" y="458.465942309609">
+     T
+    </text>
+   </g>
+   <text class="house_sign_degree_hours" x="167.243627363278" y="436.991749726945">
+    19°
+   </text>
+   <text class="house_sign_degree_minutes" x="204.491200513894" y="402.37096291332">
+    44′
+   </text>
+   <g id="Taurus">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_1" x="186.560071712557" y="419.960089928182">
+     B
+    </text>
+   </g>
+   <text class="xp_symbol xp_symbol_sign xp_house_sign_r" x="221.651698219346" y="387.66690146626">
+    Ú
+   </text>
+   <line class="Uranus" x1="140.688711986634" x2="144.844658630461" y1="465.891270148619" y2="461.563671796916">
+   </line>
+   <use class="dot PartOfFortun" title="PartOfFortun" x="281.756939986313" xlink:href="#dot" y="377.892173941526">
+   </use>
+   <g id="PartOfFortun">
+    <text class="xp_symbol xp_symbol_planet xp_symbol_planet_c PartOfFortun" id="xp_p_29" x="245.111967464071" y="511.466956596507">
+     j
+    </text>
+   </g>
+   <text class="house_sign_degree_hours" x="252.269000218691" y="483.178347891242">
+    20°
+   </text>
+   <text class="house_sign_degree_minutes" x="267.214836226903" y="436.443043526326">
+    24′
+   </text>
+   <g id="Gemini">
+    <text class="xp_symbol xp_symbol_sign xp_house_sign_c" id="xp_s_2" x="259.969956472968" y="459.837043534515">
+     C
+    </text>
+   </g>
+   <line class="PartOfFortun" x1="247.55120246065" x2="248.919431961676" y1="523.940000081889" y2="518.098087036274">
+   </line>
+  </g>
+  <g id="planets2">
+  </g>
+ </g>
+</svg>
+</div></div></html>

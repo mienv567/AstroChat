@@ -42,6 +42,12 @@ class Core():
         self.knowledge_dict: Dict[str, Dict[str, str]] = {}
         self.boundry_dict: Dict[str, Dict[str, List[int]]] = dict()  # {白羊: {木星: [0, 6]}}
 
+        # 用于prompt召回的key，和用户的描述
+        self.llm_recall_key = []
+        self.ruler_fly_vec = []
+        self.star_loc_vec = []
+        self.guest_desc_vec = []
+
 
     def execute(self,):
         self._init_knowledge_dict()
@@ -61,14 +67,72 @@ class Core():
         self._set_session_afflict()
 
 
-    # 144种日月落星座
-    def get_solar_moon_const(self,) -> str:
-        rec_vec = []
+    # 根据排盘信息，生成用户描述
+    def gen_guest_info(self,):
+        """
+        统一话说：n宫主飞n宫、x落几宫、2宫主被1宫主接纳、
+        :return:
+        """
 
-        solar, moon = '', ''
+        # 144种日月落星座
+        def ctx_key_sun_moon_const():
+            rec_vec = []
+
+            solar, moon = '', ''
+            for star_name, star_obj in self.star_dict.items():
+                if star_name not in {'太阳', '月亮'}:
+                    # logger.debug(f'{star_name} continue....')
+                    continue
+
+                degree = star_obj.degree
+                house = star_obj.house
+                score = star_obj.score
+                is_afflicted = '严重受克' if star_obj.is_afflicted else ''
+                constellation = star_obj.constellation
+
+                if star_name == '太阳':
+                    solar = constellation
+                elif star_name == '月亮':
+                    moon = constellation
+
+            self.llm_recall_key.append(f'太阳{solar}月亮{moon}')
+            # return f'太阳{solar}月亮{moon}'
+
+        # 上升、太阳星座
+        def ctx_key_asc_const():
+            rec_vec = []
+
+            solar, asc = '', ''
+            for star_name, star_obj in self.star_dict.items():
+                if star_name not in {'太阳', '上升'}:
+                    continue
+
+                degree = star_obj.degree
+                house = star_obj.house
+                score = star_obj.score
+                is_afflicted = '严重受克' if star_obj.is_afflicted else ''
+                constellation = star_obj.constellation
+
+                if star_name == '太阳':
+                    solar = constellation
+                elif star_name == '上升':
+                    asc = constellation
+
+            print(solar, asc)
+            self.llm_recall_key.append(f'上升{asc}')
+            self.llm_recall_key.append(f'上升{asc}太阳{solar}')
+
+            # return f'上升{asc}', f'上升{asc}太阳{solar}'
+
+        ctx_key_sun_moon_const()
+        ctx_key_asc_const()
+
+        # llm 召回的key
+        # ruler_fly_vec = []
+        # star_loc_vec = []
+        # guest_desc_vec = []
         for star_name, star_obj in self.star_dict.items():
-            if star_name not in {'太阳', '月亮'}:
-                # logger.debug(f'{star_name} continue....')
+            if star_name in {'北交', '上升', '中天', '下降', '天底'}:
                 continue
 
             degree = star_obj.degree
@@ -76,48 +140,55 @@ class Core():
             score = star_obj.score
             is_afflicted = '严重受克' if star_obj.is_afflicted else ''
             constellation = star_obj.constellation
+            lord_house_vec = star_obj.lord_house_vec
 
-            if star_name == '太阳':
-                solar = constellation
-            elif star_name == '月亮':
-                moon = constellation
+            # 互容接纳
+            rec_vec = []
+            for k, obj in star_obj.recepted_dict.items():
+                msg = f'与「{obj.star_b}」互容'
 
-        return f'太阳{solar}月亮{moon}'
+                if obj.action_name == '接纳':
+                    msg = f'被「{obj.star_b}」接纳'
 
+                rec_vec.append(msg)
 
-    # 上升、太阳星座
-    def get_asc_const(self,) -> Tuple[str, str]:
-        rec_vec = []
+            rec_msg2 = ''
+            if len(rec_vec) != 0:
+                rec_msg = ';'.join(rec_vec)
+                rec_msg2 = f'{rec_msg}'
 
-        solar, asc = '', ''
-        for star_name, star_obj in self.star_dict.items():
-            if star_name not in {'太阳', '上升'}:
-                continue
+            # 搞飞宫
+            if star_name in seven_star_list:
+                for lord_house in lord_house_vec:
+                    tmp = f'{lord_house}宫主落{house}宫'
+                    self.ruler_fly_vec.append(tmp)
 
-            degree = star_obj.degree
-            house = star_obj.house
-            score = star_obj.score
-            is_afflicted = '严重受克' if star_obj.is_afflicted else ''
-            constellation = star_obj.constellation
+                    if lord_house == 1:
+                        self.star_loc_vec.append(f'命主星落{house}宫')
 
-            if star_name == '太阳':
-                solar = constellation
-            elif star_name == '上升':
-                asc = constellation
+            # 搞落宫
+            self.star_loc_vec.append(f'{star_name}落{house}宫')
 
-        return f'上升{asc}', f'上升{asc}太阳{solar}'
+            msg_hurong = '' if rec_msg2 == '' else f'互溶接纳信息：{rec_msg2}'
+            msg_lord = '' if len(star_obj.lord_house_vec) == 0 else f'是{"、".join([str(item) for item in star_obj.lord_house_vec])}的宫主星'
+            msg_score = f'黄道得分:{score},' if star_name not in {'天王', '海王', '冥王', '凯龙', '婚神', '福点'} else ''
+
+            msg = f'{star_name}落{house}宫，{msg_lord}, 在{constellation}座，{msg_score} {msg_hurong}, {is_afflicted}'
+            self.guest_desc_vec.append(msg)
+            # logger.debug(msg)
 
 
     def get_chart_svg(self):
-        html_str = '<html><meta http-equiv="Content-type" content="text/html; charset=utf-8" /><link href="https://xp.ixingpan.com/statics/css/bootstrap.min.css" rel="stylesheet" type="text/css" /><link rel="stylesheet" href="https://xp.ixingpan.com/statics/css/style.css?v=2021030401"/><link rel="stylesheet" href="https://xp.ixingpan.com/statics/css/font-xp-gryph.css?v=2016083101" /><link rel="stylesheet" type="text/css" href="https://xp.ixingpan.com/statics/css/chart.css?v=2016082402" title="chart-default" media="all" /><link rel="stylesheet" type="text/css" href="https://xp.ixingpan.com/statics/css/graphy-chart.css?v=2016062801" id="chartMode"/><link rel="stylesheet" href="https://xp.ixingpan.com/statics/css/chart-extend.css?v=2016082402" id="aspect-line-type-css"/><div style="width: 75%;margin:0px;padding:0px"><div id="achart" class="text-center" style="margin: auto;padding:5px 10px 15px 5px;">{}</div></div></html>'
+        html_str = '<html><meta http-equiv="Content-type" content="text/html; charset=utf-8" /><link href="https://xp.ixingpan.com/statics/css/bootstrap.min.css" rel="stylesheet" type="text/css" /><link rel="stylesheet" href="https://xp.ixingpan.com/statics/css/style.css?v=2021030401"/><link rel="stylesheet" href="https://xp.ixingpan.com/statics/css/font-xp-gryph.css?v=2016083101" /><link rel="stylesheet" type="text/css" href="https://xp.ixingpan.com/statics/css/chart.css?v=2016082402" title="chart-default" media="all" /><link rel="stylesheet" type="text/css" href="https://xp.ixingpan.com/statics/css/graphy-chart.css?v=2016062801" id="chartMode"/><link rel="stylesheet" href="https://xp.ixingpan.com/statics/css/chart-extend.css?v=2016082402" id="aspect-line-type-css"/><div style="width: 100%;margin:0px;padding:0px"><div id="achart" class="text-center" style="margin: auto;padding:5px 10px 15px 5px;">{}</div></div></html>'
 
         svg_tags = self.soup.find_all('svg')
 
         svg_content = svg_tags[0].prettify()  # 获取SVG标签的内容
         # print(svg_content)
-        # svg = tables[0].text.strip()
+        res = html_str.format(svg_content)
+        # print(res)
 
-        self.chart_svg_html = html_str.format(svg_content)
+        self.chart_svg_html = res
 
 
     def _http_ixingpan(self):
@@ -175,7 +246,12 @@ class Core():
             localized_dt = pytz.timezone('Asia/Shanghai').localize(dt)
             is_dst = localized_dt.dst().total_seconds() != 0
 
-            return is_dst
+            print(f'in is_dst, time_str:{time_str}, is_dst={is_dst}')
+
+            if is_dst:
+                return 1
+            else:
+                return 0
 
 
         _load_ixingpan_dist()

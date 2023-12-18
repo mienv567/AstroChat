@@ -187,9 +187,9 @@ if "history" not in st.session_state:
         st.session_state.area_index = 0
 
         # 日月升
-        st.session_state.solar_moon_constell = ''
-        st.session_state.asc_constell = ''
-        st.session_state.asc_solar_constell = ''
+        # st.session_state.solar_moon_constell = ''
+        # st.session_state.asc_constell = ''
+        # st.session_state.asc_solar_constell = ''
 
         load_knowledge_file()
 
@@ -303,7 +303,7 @@ def on_button_click():
     p,c,a = st.session_state.province_of_birth, st.session_state.city_of_birth, st.session_state.area_of_birth
     st.session_state.areaid = st.session_state.area_dict[p][c][a]
 
-    update_birthday()
+    # update_birthday()
 
     btime = f'{st.session_state.date_of_birth} {st.session_state.time_of_birth}'
     print(btime)
@@ -321,7 +321,8 @@ def on_button_click():
                      '_parse_ixingpan_aspect',
                      '_is_received_or_mutal',
                      '_set_session_afflict',
-                     'get_chart_svg']
+                     'get_chart_svg',
+                     'gen_guest_info']
 
     step_vol = int(100.0/len(execute_chain))
     # progress_bar = st.progress(0, text='排盘中，请稍后....')
@@ -334,7 +335,7 @@ def on_button_click():
         time.sleep(mysterious_wait)
         progress_bar.progress((i + 1)*step_vol, text='排盘中，请稍后....')
 
-    time.sleep(0.2)
+    time.sleep(0.1)
     progress_bar.empty()
 
     st.session_state.finished_curl_natal = 1
@@ -346,19 +347,64 @@ progress_bar = st.progress(0, text='排盘中，请稍后....')
 progress_bar.empty()
 
 
+def filter_nested_dict(knowledge_dict, filter_keys):
+    filtered_dict = {}
+    for section_name, sub_dict in knowledge_dict.items():
+        filtered_sub_dict = {}
+        for sub_key, val in sub_dict.items():
+            if sub_key in filter_keys:
+                filtered_sub_dict[sub_key] = val
+        if filtered_sub_dict:
+            filtered_dict[section_name] = filtered_sub_dict
+
+    print(filtered_dict)
+    return filtered_dict
+
+
 if st.session_state.finished_curl_natal:
+    st.markdown('----')
+    st.markdown('#### :rainbow[星图信息]')
     st.markdown(st.session_state.core.chart_svg_html, unsafe_allow_html=True)
 
+    key_all = st.session_state.core.guest_desc_vec
+    key_all.extend(st.session_state.core.star_loc_vec)
+    key_all.extend(st.session_state.core.ruler_fly_vec)
+    key_all.extend(st.session_state.core.llm_recall_key)
+    key_all = list(set(key_all))
+    filtered_dict = filter_nested_dict(st.session_state.knowledge_dict, key_all)
+
+    for key, val in filtered_dict["日月星座组合-144种"].items():
+        st.markdown('----')
+        new_key = key[:4] + " " + key[4:]
+        st.markdown(f'#### :rainbow[{new_key}]')
+        st.markdown(f'> {val}')
+
+    if "上升太阳星座" in filtered_dict:
+        for key, val in filtered_dict["上升太阳星座"].items():
+            if len(key) > 5:
+                key = key[:4] + " " + key[4:]
+            st.markdown('----')
+            st.markdown(f'#### :rainbow[{key}]')
+            st.markdown(f'> {val}')
+
+
     # 搞日月升
-    asc_key, asc_solar_key = st.session_state.core.get_asc_const()
-    solar_moon_key = st.session_state.core.get_solar_moon_const()
-    st.session_state.solar_moon_constell = solar_moon_key
-    st.session_state.asc_constell = asc_key
-    st.session_state.asc_solar_constell = asc_solar_key
+    # for key in st.session_state.core.llm_recall_key:
+    #     st.markdown('----')
+    #     st.markdown(f'#### :rainbow[{key}]')
+
+    st.markdown(st.session_state.core.guest_desc_vec)
+    st.markdown(st.session_state.core.star_loc_vec)
+    st.markdown(st.session_state.core.ruler_fly_vec)
+    # asc_key, asc_solar_key = st.session_state.core.get_asc_const()
+    # solar_moon_key = st.session_state.core.get_solar_moon_const()
+    # st.session_state.solar_moon_constell = solar_moon_key
+    # st.session_state.asc_constell = asc_key
+    # st.session_state.asc_solar_constell = asc_solar_key
 
     # st.session_state.chart_html = st.session_state.core.get_chart_svg()
 
-    add_robot_history(st.session_state.knowledge_dict['日月星座组合-144种'][solar_moon_key])
+    # add_robot_history(st.session_state.knowledge_dict['日月星座组合-144种'][solar_moon_key])
 
 
 # 渲染聊天历史记录

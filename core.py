@@ -43,7 +43,7 @@ class Core():
 
 
     def execute(self,):
-        self.init_knowledge_dict()
+        self._init_knowledge_dict()
         self._http_ixingpan()
         self._parse_glon_glat()  # 获取经纬度，Optional
         # soup_ixingpan = _get_basic_soup_from_http(customer_name=customer_name, content=content)
@@ -631,7 +631,7 @@ class Core():
         return False
 
 
-    def init_knowledge_dict(self,):
+    def _init_knowledge_dict(self, ):
         def _load_knowledge_file():
             # Load knowledge_web.ini
             config = configparser.ConfigParser()

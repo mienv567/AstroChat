@@ -296,11 +296,8 @@ st.markdown(
 
 def on_button_click():
     st.session_state.start_btn = 1
-    # update_birthday()
 
-    p = st.session_state.province_of_birth
-    c = st.session_state.city_of_birth
-    a = st.session_state.area_of_birth
+    p,c,a = st.session_state.province_of_birth, st.session_state.city_of_birth, st.session_state.area_of_birth
     st.session_state.areaid = st.session_state.area_dict[p][c][a]
 
     update_birthday()
@@ -310,10 +307,32 @@ def on_button_click():
 
     core = Core(birthday=btime, province=st.session_state.province_of_birth, city=st.session_state.city_of_birth, area=st.session_state.area_of_birth)
     st.session_state.core = core
-    st.session_state.core.execute()
+
+    # st.session_state.core.execute()
+    # 使用 chain 调用，可以显示 progress 进度条
+    execute_chain = ['_init_knowledge_dict',
+                    '_http_ixingpan',
+                    '_parse_glon_glat',
+                    '_parse_ixingpan_house',
+                    '_parse_ixingpan_star',
+                    '_parse_ixingpan_aspect',
+                    '_is_received_or_mutal',
+                    '_set_session_afflict']
+
+    step_vol = int(100.0/len(execute_chain))
+    # progress_bar = st.progress(0, text='排盘中，请稍后....')
+    for i in range(len(execute_chain)):
+        method_name = execute_chain[i]
+        method = getattr(st.session_state.core, method_name)
+        method()
+        time.sleep(0.5)
+        progress_bar.progress((i + 1)*step_vol, text='排盘中，请稍后....')
+    time.sleep(1)
+    progress_bar.empty()
 
     asc_key, asc_solar_key = st.session_state.core.get_asc_const()
     solar_moon_key = st.session_state.core.get_solar_moon_const()
+
     st.session_state.solar_moon_constell = solar_moon_key
     st.session_state.asc_constell = asc_key
     st.session_state.asc_solar_constell = asc_solar_key
@@ -325,6 +344,8 @@ def on_button_click():
 
 st.button("开始排盘", type='primary', on_click=on_button_click)
 
+progress_bar = st.progress(0, text='排盘中，请稍后....')
+progress_bar.empty()
 
 # 渲染聊天历史记录
 for i, message in enumerate(st.session_state.history):

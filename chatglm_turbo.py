@@ -174,6 +174,7 @@ if "history" not in st.session_state:
         st.session_state.age = 0
         st.session_state.start_btn = 0
         st.session_state.finished_curl_natal = 0
+        st.session_state.filtered_dict = {}
 
         # st.session_state.province_of_birth = '北美洲'
         # st.session_state.city_of_birth = '美国'
@@ -358,7 +359,48 @@ def filter_nested_dict(knowledge_dict, filter_keys):
             filtered_dict[section_name] = filtered_sub_dict
 
     print(filtered_dict)
+
+    st.session_state.filtered_dict = filtered_dict
     return filtered_dict
+
+
+def gen_llm_knowledge():
+    msg = ['| 列1 | 列2 |', '| --- | --- |']
+    for section, sub_dict in st.session_state.filtered_dict.items():
+        for key, val in sub_dict.items():
+            msg.append(f'|{section}|{key}|')
+
+    st.markdown('\n'.join(msg))
+
+    llm_vec = []
+    for section, sub_dict in st.session_state.filtered_dict.items():
+        prefix = '高中前学业'
+
+        if section == '学业-高中前':
+            prefix = '高中前学业'
+        elif section == '学业-高中后':
+            prefix = '高中后学业'
+        elif '婚姻' in section or '配偶' in section:  # TODO：①增加'x宫主金星的pattern' ②几飞几，还是要按topic分开
+            prefix = '关于婚姻'
+        else:
+            continue
+
+        sub_vec = []
+        for key, val in sub_dict.items():
+            val = val.strip('。')
+            sub_vec.append(f'{key},{val}')
+
+        final_str = f'{prefix}:{";".join(sub_vec)}'
+        llm_vec.append(final_str)
+
+    for msg in llm_vec:
+        st.markdown(f'- {msg}')
+
+
+
+    # st.markdown(st.session_state.core.guest_desc_vec)
+    # st.markdown(st.session_state.core.star_loc_vec)
+    # st.markdown(st.session_state.core.ruler_fly_vec)
 
 
 if st.session_state.finished_curl_natal:
@@ -387,24 +429,11 @@ if st.session_state.finished_curl_natal:
             st.markdown(f'#### :rainbow[{key}]')
             st.markdown(f'> {val}')
 
-
-    # 搞日月升
-    # for key in st.session_state.core.llm_recall_key:
-    #     st.markdown('----')
-    #     st.markdown(f'#### :rainbow[{key}]')
-
     st.markdown(st.session_state.core.guest_desc_vec)
     st.markdown(st.session_state.core.star_loc_vec)
     st.markdown(st.session_state.core.ruler_fly_vec)
-    # asc_key, asc_solar_key = st.session_state.core.get_asc_const()
-    # solar_moon_key = st.session_state.core.get_solar_moon_const()
-    # st.session_state.solar_moon_constell = solar_moon_key
-    # st.session_state.asc_constell = asc_key
-    # st.session_state.asc_solar_constell = asc_solar_key
 
-    # st.session_state.chart_html = st.session_state.core.get_chart_svg()
-
-    # add_robot_history(st.session_state.knowledge_dict['日月星座组合-144种'][solar_moon_key])
+    gen_llm_knowledge()
 
 
 # 渲染聊天历史记录

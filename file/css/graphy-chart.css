@@ -1,0 +1,169 @@
+﻿.gry{
+	display:inline;
+}
+
+.txt{
+	display:none;	
+}
+
+#planets use,
+#planets2 use {	
+	font-weight:normal;
+}
+
+
+.xp_symbol, 
+.xp_symbol_planet,
+.xp_symbol_planet2{
+    display: inline-block;
+    font-family: 'web_ixingpan';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    font-size:28px;    
+    margin: 0px;
+    padding: 0px;
+    cursor:pointer;
+}
+
+.xp_symbol_house{
+	font-size:20px !important;
+}
+
+.xp_symbol_house:hover{
+	font-size:26px !important;
+}
+
+.xp_symbol_planet:hover,
+.xp_symbol_planet2:hover{
+	font-size:32px;    	
+}
+
+.xp_symbol_sign{   
+    font-size:32px;  
+}
+
+.xp_symbol_sign:hover{
+	font-size:36px;    	
+}
+
+.xp_symbol_ruled{   
+    font-size:20px;  
+}
+
+.xp_symbol_ruled:hover{
+	font-size:24px;    	
+}
+
+@media screen and (min-width:640px) {
+    .xp_symbol, 
+    .xp_symbol_planet,
+    .xp_symbol_planet2{
+        font-size:24px; 
+    }
+
+    .xp_symbol_house{
+        font-size:18px !important;
+    }
+
+    .xp_symbol_house:hover{
+        font-size:24px !important;
+    }
+
+    .xp_symbol_planet:hover,
+    .xp_symbol_planet2:hover{
+        font-size:30px;    	
+    }
+
+    .xp_symbol_sign{   
+        font-size:30px;  
+    }
+}
+
+#firdariabig .xp_symbol{
+	font-size:20px; 
+	stroke-width:1;
+}
+
+#firdariasmall .xp_symbol{
+	font-size:16px; 
+	stroke-width:1;
+}
+
+
+
+.xp_symbol_house_c{
+	font-size:16px !important;
+}
+
+.xp_symbol_house_c:hover{
+	font-size:18px !important;
+}
+
+.xp_symbol_planet_c,
+.xp_symbol_planet_c2{
+	font-size:20px; 
+}
+
+.xp_symbol_planet_c:hover,
+.xp_symbol_planet_c2:hover{
+	font-size:24px;    	
+}
+
+
+#cuspids text.house_sign_degree_hours,
+#planets text.house_sign_degree_hours,
+#planets2 text.house_sign_degree_hours
+{
+	font-size:10px;
+}
+
+#cuspids text.house_sign_degree_minutes,
+#planets text.house_sign_degree_minutes,
+#planets2 text.house_sign_degree_minutes
+{
+	font-size:8px;
+}
+
+#cuspids text.xp_house_sign_c{
+	font-size: 18px;
+}
+
+#planets text.xp_house_sign_c,
+#planets2 text.xp_house_sign_c{
+	font-size: 14px;
+}
+
+#planets text.xp_house_sign_r,
+#planets2 text.xp_house_sign_r{
+	font-size: 20px;	
+}
+
+
+.single-chart  .xp_symbol_planet_c{
+	font-size:26px !important; 
+}
+
+.single-chart  .xp_symbol_planet_c:hover{
+	font-size:28px !important;    	
+}
+
+
+.single-chart text.house_sign_degree_hours{
+	font-size:14px !important;
+}
+
+.single-chart text.house_sign_degree_minutes
+{
+	font-size:12px !important;
+}
+
+.single-chart text.xp_house_sign_r{
+	font-size: 20px !important;	
+}
+
+.classic #planets line,
+.classic #planets2 line{
+	stroke-dasharray:1,2;
+	stroke-width: 1.2px;
+}

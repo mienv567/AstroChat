@@ -1,0 +1,831 @@
+
+/* --------------------------------- HOUSES --------------------------------- */
+
+#achart{
+	background: #111
+}
+
+#chartbody{
+	fill:#111111;
+}
+
+/* Cuspids */
+#cuspids line, #Arrow {
+	fill:none;
+	stroke:#E0E0E0;
+	stroke-width:1;
+	stroke-linecap:round;
+	stroke-linejoin:round;
+}
+
+/* Main cuspids */
+#cuspids line.cuspid1,
+#cuspids line.cuspid4,
+#cuspids line.cuspid7,
+#cuspids line.cuspid10,
+#cuspids line.cuspid13,
+#cuspids line.cuspid16,
+#cuspids line.cuspid19,
+#cuspids line.cuspid22,
+#cuspids line.cuspid25,
+#cuspids line.cuspid28,
+#cuspids line.cuspid31,
+#cuspids line.cuspid34 {
+	stroke-width:1.5;
+}
+
+#cuspids line.axisline{
+    stroke-dasharray:2,2;
+    stroke-width:0.4;
+}
+
+/* Center of the chart */
+#houses .origin {
+	stroke:white;
+	stroke-width:0.8;
+}
+
+/* Circle of houses used in the default xslt */
+#houses>#hcircle {
+	fill:none;
+	stroke:white;
+	stroke-width:1;
+}
+
+#houses>#hcirclemin,
+#houses>#hcirclemin_2,
+#houses>#hcirclemin_2_1{
+	fill:none;
+	stroke:white;
+	stroke-width:1;
+}
+
+#firdariasmall  .pathnow{
+	fill:#ad00ad;
+	stroke:white;
+	stroke-width:1.7;
+}
+
+#firdariabig  .pathnow{
+	fill:#ad00ad;
+	stroke:white;
+	stroke-width:1;
+}
+
+#firdariasmall  .pathpass{
+	fill:#616161;
+	stroke:white;
+	stroke-width:1.7;
+}
+
+#firdariabig  .pathpass{
+	fill:#616161;
+	stroke:white;
+	stroke-width:1;
+}
+
+#firdariasmall  .usenow{
+	fill:#ad00ad;
+	stroke:white;	
+	stroke-width:1.7;
+}
+
+#firdariabig  .usenow{
+	fill:#ad00ad;;
+	stroke:white;	
+	stroke-width:1;
+}
+
+#firdariabig .nowline{
+	stroke:red;
+}
+
+#firdariasmall  .pathfuture{
+	fill:#5C5CFF;
+	stroke:white;
+	stroke-width:1.7;
+}
+
+#firdariabig  .pathfuture{
+	fill:#5C5CFF;
+	stroke:white;
+	stroke-width:1;
+}
+
+#firdariasmall  .usefuture{
+	fill:#5C5CFF;
+	stroke:white;
+	stroke-width:1.7;
+}
+
+#firdariabig  .usefuture{
+	fill:#5C5CFF;
+	stroke:white;
+	stroke-width:1;
+}
+
+#firdariasmall  .usepass{
+	fill:#616161;
+	stroke:white;
+	stroke-width:1.7;
+}
+
+#firdariabig  .usepass{
+	fill:#616161;
+	stroke:white;
+	stroke-width:1;
+}
+
+#firdariabig use,
+#firdariasmall use
+{
+	stroke:red;
+	stroke-width:1.25;
+	fill:white;
+	stroke-linecap:round;
+}
+
+#firdariabig line,
+#firdariasmall line
+ {
+	stroke: red;
+	stroke-linecap:round;
+}
+
+#firdariabig .age{
+	font-size:10px;
+	fill:white;	
+}
+
+#firdariabig  .textpass,
+#firdariabig  .textnow,
+#firdariabig  .textfuture,
+#firdariasmall  .textpass,
+#firdariasmall  .textnow,
+#firdariasmall  .textfuture{
+	fill:white;	
+}
+
+
+/* Numbers */
+#cuspids text {
+	font-size:12px;
+	fill:white;	
+}
+
+
+#cuspids .House1,
+#cuspids .House5,
+#cuspids .House9{	
+	fill:red;	
+}
+
+#cuspids .House2,
+#cuspids .House6,
+#cuspids .House10{	
+	fill:yellow;	
+}
+
+#cuspids .House3,
+#cuspids .House7,
+#cuspids .House11{	
+	fill:#3DF500;	
+}
+
+#cuspids .House4,
+#cuspids .House8,
+#cuspids .House12{	
+	fill:#4D4DFF;	
+}
+
+#cuspids use
+{	
+	font-size:14px;
+	font-style:normal;
+	font-weight:bold;	
+	stroke-width:1.4;
+	fill:none;
+	stroke-linecap:round;
+}
+
+#cuspids use.Sun,
+#cuspids use.Jupiter,
+#cuspids use.Mars
+{
+	stroke:red;	
+}
+
+#cuspids use.Moon,
+#cuspids use.Neptune,
+#cuspids use.Pluto
+{
+	stroke:#4D4DFF;	
+}
+
+#cuspids  use.Mercury,
+#cuspids  use.Uranus
+{
+	stroke:#3DF500;
+}
+
+#cuspids  use.Saturn,
+#cuspids use.Venus
+{
+	stroke:yellow;	
+}
+
+/* ------------------------------- ZODIAC ----------------------------------- */
+
+#zodiac path,
+#zodiac>#cercle>path.disc {
+	fill:#111111;
+	stroke:#E0E0E0;
+	stroke-width:2;
+}
+
+#zodiac path,
+#zodiac>#cercle>path {
+	stroke:#E0E0E0;
+	stroke-width:2;
+}
+
+/* Signs */
+#zodiac>#signs path {
+	fill:none;
+	stroke:#71b0c7;
+	stroke-width:2;
+	stroke-linecap:round;
+	stroke-linejoin:round;
+}
+
+#ascendant {
+	font-size:16px;
+	font-style:normal;
+	font-weight:bold;
+	fill:red;
+	stroke-width:1px;
+	font-family:Georgia;
+}
+
+#zodiac>#signs>#aries path,
+#zodiac>#signs>#leo path,
+#zodiac>#signs>#sagittarius path{
+	stroke:red;	
+}
+
+#zodiac>#signs>#taurus path,
+#zodiac>#signs>#virgo path,
+#zodiac>#signs>#capricorn path{
+	stroke:yellow;	
+}
+
+#zodiac>#signs>#gemini path,
+#zodiac>#signs>#libra path,
+#zodiac>#signs>#aquarius path{
+	stroke:#3DF500;	
+}
+
+#zodiac>#signs>#cancer path,
+#zodiac>#signs>#scorpio path,
+#zodiac>#signs>#pisces path{
+	stroke:#4D4DFF;	
+}
+
+#signText tspan
+{
+	font-size:26px;
+	letter-spacing:3.2px
+}
+
+#signText tspan#aries,
+#signText tspan#leo,
+#signText tspan#sagittarius,
+#Aries text,
+#Leo text,
+#Sagittarius text
+{
+	stroke:none;	
+	fill:red;	
+}
+
+#signText tspan#taurus,
+#signText tspan#virgo,
+#signText tspan#capricorn,
+#Taurus text,
+#Virgo text,
+#Capricorn text
+{
+	stroke:none;	
+	fill:yellow;	
+}
+
+#signText tspan#gemini,
+#signText tspan#libra,
+#signText tspan#aquarius,
+#Gemini text,
+#Libra text,
+#Aquarius text
+{
+	stroke:none;	
+	fill:#3DF500;	
+}
+
+#signText tspan#cancer,
+#signText tspan#scorpio,
+#signText tspan#pisces,
+#Cancer text,
+#Scorpio text,
+#Pisces text
+{
+	stroke:none;	
+	fill:#4D4DFF;	
+}
+
+#signruled use
+{	
+	font-size:14px;
+	font-style:normal;
+	font-weight:bold;	
+	stroke-width:1.4;
+	fill:none;
+	stroke-linecap:round;
+}
+
+#signruled use.Sun,
+#signruled use.Jupiter,
+#signruled use.Mars
+ {
+	stroke:red;	
+}
+
+#signruled use.Moon,
+#signruled use.Neptune,
+#signruled use.Pluto
+{
+	stroke:#4D4DFF;	
+}
+
+#signruled  use.Mercury,
+#signruled  use.Uranus
+{
+	stroke:#3DF500;
+}
+
+#signruled  use.Saturn,
+#signruled use.Venus
+{
+	stroke:yellow;	
+}
+
+/* ------------------------------ ASPECTS ------------------------------------*/
+
+#aspects>line {
+	stroke-linecap:round;
+	stroke:red;
+}
+
+#aspects>line.Opposition{
+	stroke:#4D4DFF;
+}
+#aspects>line.Square {
+	stroke:red;
+}
+
+
+#aspects>line.Quincunx,
+#aspects>line.Semi-sextile{
+	stroke:#ff00ff;
+}
+
+#aspects>line.Trine{
+	stroke:#3DF500;
+}
+
+#aspects>line.Sextile{
+	stroke:#00B8B8;
+}
+
+#aspects>line.Quintile ,
+#aspects>line.Bi-quintile,
+#aspects>line.Decile
+  {
+	stroke:#404040;
+}
+
+#aspects>line.Semi-Square,
+#aspects>line.Sesquare{
+	stroke:#7f7f00;
+}
+
+#aspects path {
+	stroke:#0000A3;
+	stroke-width:10;
+	fill:none;
+}
+
+#aspects path.Conjunction_2 {
+	stroke:#0000A3;
+	stroke-width:4;
+	fill:none;
+}
+
+/* disable aspect for nodes */
+#aspects>line.TrueSouthNodeTrueNode,
+#aspects>line.TrueNodeTrueSouthNode,
+#aspects>line.MeanSouthNodeMeanNode,
+#aspects>line.MeanNodeMeanSouthNode,
+#aspects>line.TrueSouthNodeMeanNode,
+#aspects>line.MeanNodeTrueSouthNode,
+#aspects>line.MeanSouthNodeTrueNode,
+#aspects>line.MeanNodeTrueSouthNode {
+	display:none;
+}
+
+/* ------------------------------ planets ------------------------------------ */
+
+#planets use,
+#planets2 use {	
+	font-size:14px;
+	font-style:normal;
+	font-weight:bold;	
+	stroke-width:1.4;
+	fill:none;
+	stroke-linecap:round;
+}
+
+
+#planets use.Sun,
+#planets use.Asc,
+#planets use.Jupiter,
+#planets use.Mars,
+#planets2 use.Sun,
+#planets2 use.Asc,
+#planets2 use.Jupiter,
+#planets2 use.Mars {
+	stroke:red;	
+}
+
+#Sun text,
+#Asc text,
+#Jupiter text,
+#Mars text,
+#Sun2 text,
+#Asc2 text,
+#Jupiter2 text,
+#Mars2 text
+{
+	stroke:none;
+	fill:red;
+}
+
+#planets use.Moon,
+#planets use.IC,
+#planets use.Neptune,
+#planets use.Pluto,
+#planets2 use.Moon,
+#planets2 use.IC,
+#planets2 use.Neptune,
+#planets2 use.Pluto{
+	stroke:#4D4DFF;	
+}
+
+#Moon text,
+#IC text,
+#Neptune text,
+#Pluto text,
+#Moon2 text,
+#IC2 text,
+#Neptune2 text,
+#Pluto2 text
+{
+	stroke:none;
+	fill:#4D4DFF;
+}
+
+
+#planets use.Saturn,
+#planets use.Venus,
+#planets use.MC,
+#planets2 use.Saturn,
+#planets2 use.Venus,
+#planets2 use.MC {
+	stroke:yellow;	
+}
+
+#Saturn text,
+#Venus text,
+#MC text,
+#Saturn2 text,
+#Venus2 text,
+#MC2 text
+{
+	stroke:none;
+	fill:yellow;
+}
+
+
+#planets use.Mercury,
+#planets use.Des,
+#planets use.Uranus,
+#planets2 use.Mercury,
+#planets2 use.Des,
+#planets2 use.Uranus{
+	stroke:#3DF500;	
+}
+
+#Mercury text,
+#Des text,
+#Uranus text,
+#Mercury2 text,
+#Des2 text,
+#Uranus2 text
+{
+	stroke:none;
+	fill:#3DF500;
+}
+
+/* Nodes and Lilith */
+
+#planets  use.OscuApogee, 
+#planets  use.MeanApogee, 
+#planets  use.TrueNode, 
+#planets  use.MeanNode,
+#planets  use.TrueSouthNode, 
+#planets  use.MeanSouthNode,
+#planets  use.EastPoint,
+#planets  use.Sun-Moon,
+#planets  use.PartOfFortun,
+#planets  use.Vertex,
+#planets2  use.OscuApogee, 
+#planets2  use.MeanApogee, 
+#planets2  use.TrueNode, 
+#planets2  use.MeanNode,
+#planets2  use.TrueSouthNode, 
+#planets2  use.MeanSouthNode,
+#planets2  use.EastPoint,
+#planets2  use.Sun-Moon,
+#planets2  use.PartOfFortun,
+#planets2  use.Vertex
+{
+	stroke:#00B8B8;
+}
+
+#OscuApogee text,
+#MeanApogee text,
+#TrueNode text,
+#MeanNode text,
+#TrueSouthNode text,
+#MeanSouthNode text,
+#EastPoint text,
+#Sun-Moon text,
+#PartOfFortun text,
+#Vertex text,
+#OscuApogee2 text,
+#MeanApogee2 text,
+#TrueNode2 text,
+#MeanNode2 text,
+#TrueSouthNode2 text,
+#MeanSouthNode2 text,
+#EastPoint2 text,
+#Sun-Moon2 text,
+#PartOfFortun2 text,
+#Vertex2 text
+{
+	stroke:none;
+	fill:#00B8B8;
+}
+
+#planets use.Chiron, 
+#planets use.Pholus, 
+#planets use.Ceres,
+#planets use.Pallas,
+#planets use.Juno,
+#planets use.Vesta,
+#planets  use.Psyche,
+#planets  use.Eros,
+#planets2 use.Chiron, 
+#planets2 use.Pholus, 
+#planets2 use.Ceres,
+#planets2 use.Pallas,
+#planets2 use.Juno,
+#planets2 use.Vesta,
+#planets2 use.Psyche,
+#planets2 use.Eros
+{	
+	stroke:#FF33FF;
+}
+
+#Chiron text,
+#Pholus text,
+#Ceres text,
+#Pallas text,
+#Juno text,
+#Vesta text,
+#Psyche text,
+#Eros text,
+#Chiron2 text,
+#Pholus2 text,
+#Ceres2 text,
+#Pallas2 text,
+#Juno2 text,
+#Vesta2 text,
+#Psyche2 text,
+#Eros2 text
+{
+	stroke:none;
+	fill:#FF33FF;
+}
+
+
+#planets line,
+#planets2 line {
+    stroke-width: 1px;
+    stroke: #ccc;
+	stroke-linecap:round;
+    stroke-dasharray:1,2;
+}
+
+
+#planets use.Cupido,
+#planets use.Hades,
+#planets use.Zeus,
+#planets use.Kronos,
+#planets use.Apollon,
+#planets use.Admetos,
+#planets use.Vulkanus,
+#planets use.Poseidon,
+#planets use.Cupido2,
+#planets use.Hades2,
+#planets use.Zeus2,
+#planets use.Kronos2,
+#planets use.Apollon2,
+#planets use.Admetos2,
+#planets use.Vulkanus2,
+#planets use.Poseidon2{
+	stroke:#7f007f;
+}
+
+#Cupido text,
+#Hades text,
+#Zeus text,
+#Kronos text,
+#Apollon text,
+#Admetos text,
+#Vulkanus text,
+#Poseidon text,
+#Cupido2 text,
+#Hades2 text,
+#Zeus2 text,
+#Kronos2 text,
+#Apollon2 text,
+#Admetos2 text,
+#Vulkanus2 text,
+#Poseidon2 text
+{
+	stroke:none;
+	fill:#7f007f;
+}
+
+/* --------------------------- ruler ----------------------------------- */
+#ruler line{
+	stroke:#E0E0E0;
+	stroke-width:1;
+}
+
+#ruler  .rulebig{	
+	stroke:#754c00;
+	stroke-width: 1;
+}
+
+/* --------------------------- p2separate ----------------------------------- */
+#p2separate path{
+	stroke:#BBBBBB;
+	fill:none;
+	stroke-width: 0.5px;
+	stroke-dasharray:10,5;
+}
+
+/* --------------------------- ANIMATIONS ----------------------------------- */
+
+#zodiac>#signs g:hover path,
+#planets use:hover *,
+#aspects line:hover {
+	stroke-width: 0.2em;
+}
+
+#planets use:hover,
+#planets use:hover{
+	stroke-width:3;
+}
+
+#aspects path:hover {
+	stroke:#0000A3;
+	stroke-width: 20;
+}
+
+#aspects path.Conjunction_2:hover{	
+	stroke-width: 6;
+}
+
+#houses path {
+	stroke:transparent;
+	stroke-opacity:0.5;
+	stroke-width:90;
+	fill:none;
+}
+
+#houses path:hover {
+	stroke:#CCF;
+}
+
+#zodiac>#signs g path.zone {
+	stroke:#b58c00;
+	fill:#f8f8c1;
+}
+
+
+/*传统模式*/
+
+#houses>#hcircle_c,
+#houses>#hcirclemin_c
+{
+	fill:#111;
+	stroke:#E0E0E0;
+}
+
+#houses>#hcircle_c
+{
+	fill:#111;
+}
+
+#houses>#hcircle_2{
+	fill: #111;
+    stroke: #E0E0E0;
+    stroke-width: 1;
+}
+
+#houses>#hcirclemin_2{	
+    stroke: #E0E0E0;
+    stroke-width: 1;
+	fill:#111;
+}
+
+#cuspids text.house_sign_degree_hours,
+#planets text.house_sign_degree_hours,
+#planets2 text.house_sign_degree_hours
+{
+	stroke:none;
+	fill:white;
+}
+
+#cuspids text.house_sign_degree_minutes,
+#planets text.house_sign_degree_minutes,
+#planets2 text.house_sign_degree_minutes
+{
+	stroke:none;
+	fill:white;
+}
+
+#planets text.xp_house_sign_r,
+#planets2 text.xp_house_sign_r{
+	stroke:none;
+	fill:#f73030;	
+}
+
+.classic #planets line,
+.classic #planets2 line{
+	stroke: #999999;
+}
+
+.OrbLevel1{
+	stroke-width:1.5;
+}
+
+.OrbLevel2{
+	stroke-width:1.1;	
+}
+
+.OrbLevel3{
+	stroke-width:0.8;	
+}
+
+.OrbLevel4{
+	stroke-width:0.6;	
+}
+
+.OrbLevel5{
+	stroke-width:0.4;	
+}
+
+#aspects path.Conjunction_2 .OrbLevel2 {
+	stroke-width:4;	
+}
+
+#aspects path.Conjunction_2 .OrbLevel3 {
+	stroke-width:3;	
+}
+
+#aspects path.Conjunction_2 .OrbLevel4 {
+	stroke-width:3;	
+}
+

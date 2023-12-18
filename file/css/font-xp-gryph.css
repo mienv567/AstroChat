@@ -1,0 +1,483 @@
+@font-face {
+	font-family: 'web_ixingpan';
+	src: url('fonts/ixingpan.eot');
+	src: url('fonts/ixingpan.woff') format('woff'), url('fonts/ixingpan.ttf') format('truetype'), url('fonts/ixingpan.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'web_ixingpan_cn';
+	src: url('fonts/ixingpancn.eot');
+	src: url('fonts/ixingpancn.woff') format('woff'), url('fonts/ixingpancn.ttf') format('truetype'), url('fonts/ixingpancn.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+.xp_symbol, 
+.xp_symbol_planet,
+.xp_symbol_planet2{
+    display: inline-block;
+    font-family: 'web_ixingpan';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    font-size:24px;    
+    margin: 0px;
+    padding: 0px;
+}
+
+.xp_symbol_sign{   
+    font-size:30px;  
+}
+
+.xp_symbol_ruled{   
+    font-size:20px;  
+}
+
+.xp_symbol_Sun,
+.xp_symbol_Asc,
+.xp_symbol_Jupiter,
+.xp_symbol_Mars,
+.xp_symbol_1,
+.xp_symbol_5,
+.xp_symbol_9,
+.xp_symbol_Aries,
+.xp_symbol_Leo,
+.xp_symbol_Sagittarius
+{
+	color:red;	
+}
+
+.xp_symbol_Saturn,
+.xp_symbol_Venus,
+.xp_symbol_Pluto,
+.xp_symbol_MC,
+.xp_symbol_2,
+.xp_symbol_6,
+.xp_symbol_10,
+.xp_symbol_Taurus,
+.xp_symbol_Virgo,
+.xp_symbol_Capricorn
+{
+	color:#CC9933;	
+}
+
+.xp_symbol_Mercury,
+.xp_symbol_Des,
+.xp_symbol_Uranus,
+.xp_symbol_3,
+.xp_symbol_7,
+.xp_symbol_11,
+.xp_symbol_Gemini,
+.xp_symbol_Libra,
+.xp_symbol_Aquarius
+{
+	color:#006633;
+}
+
+.xp_symbol_Moon,
+.xp_symbol_IC,
+.xp_symbol_Neptune,
+.xp_symbol_Pluto,
+.xp_symbol_4,
+.xp_symbol_8,
+.xp_symbol_12,
+.xp_symbol_Cancer,
+.xp_symbol_Scorpio,
+.xp_symbol_Pisces
+{
+	color:#0A0AFF;	
+}
+
+.xp_symbol_OscuApogee, 
+.xp_symbol_MeanApogee, 
+.xp_symbol_TrueNode, 
+.xp_symbol_MeanNode,
+.xp_symbol_TrueSouthNode, 
+.xp_symbol_MeanSouthNode,
+.xp_symbol_EastPoint,
+.xp_symbol_Sun-Moon,
+.xp_symbol_PartOfFortun,
+.xp_symbol_Vertex{
+	color:#00B8B8;
+}
+
+.xp_symbol_Chiron, 
+.xp_symbol_Pholus, 
+.xp_symbol_Ceres,
+.xp_symbol_Pallas,
+.xp_symbol_Juno,
+.xp_symbol_Vesta,
+.xp_symbol_Eros,
+.xp_symbol_Psyche{
+	color:#FF33FF;
+}
+
+/*planet*/
+.xp_symbol_Sun:before{
+    content:"\4d";    
+}
+
+.xp_symbol_Moon:before{
+    content:"\4e";
+}
+
+.xp_symbol_Mercury:before{
+    content:"\4f";
+}
+
+.xp_symbol_Venus:before{
+    content:"\50";
+}
+ 
+.xp_symbol_Mars:before{
+    content:"\51";
+}
+
+.xp_symbol_Jupiter:before{
+    content:"\52";
+}
+
+.xp_symbol_Saturn:before{
+    content:"\53";
+}
+
+.xp_symbol_Uranus:before{
+    content:"\54";
+}
+
+.xp_symbol_Neptune:before{
+    content:"\55";
+}
+
+.xp_symbol_Pluto:before{
+    content:"\56";
+}
+ 
+.xp_symbol_MeanNode:before{
+    content:"\57";
+}
+
+.xp_symbol_TrueNode:before{
+    content:"\58";
+}
+ 
+.xp_symbol_MeanApogee:before{
+    content:"\59";
+}
+
+.xp_symbol_OscuApogee:before{
+    content:"\5a";
+}
+
+.xp_symbol_Earth:before{
+    content:"\5b";
+}
+
+.xp_symbol_Chiron:before{
+    content:"\5c";
+}
+
+.xp_symbol_Pholus:before{
+    content:"\5d";
+}
+
+.xp_symbol_Ceres:before{
+    content:"\5e";
+}
+
+.xp_symbol_Pallas:before{
+    content:"\5f";
+}
+
+.xp_symbol_Juno:before{
+    content:"\60";
+}
+
+.xp_symbol_Vesta:before{
+    content:"\61";
+}
+
+.xp_symbol_InterpretedApogee:before{
+    content:"\62";
+}
+
+.xp_symbol_InterpretedPerigee:before{
+    content:"\63";
+}
+
+.xp_symbol_MeanSouthNode:before{
+    content:"\64";
+}
+
+.xp_symbol_TrueSouthNode:before{
+    content:"\65";
+}
+
+.xp_symbol_Asc:before{
+    content:"\66";
+}
+
+.xp_symbol_MC:before{
+    content:"\67";
+}
+
+.xp_symbol_Des:before{
+    content:"\68";
+}
+
+.xp_symbol_IC:before{
+    content:"\69";
+}
+
+.xp_symbol_PartOfFortun:before{
+    content:"\6a";
+}
+
+.xp_symbol_Vertex:before{
+    content:"\6b";
+}
+
+.xp_symbol_EastPoint:before{
+    content:"\6c";
+}
+
+.xp_symbol_Sun-Moon:before{
+    content:"\6d";
+}
+
+.xp_symbol_Eros:before{
+    content:"\c1";
+}
+
+.xp_symbol_Psyche:before{
+    content:"\c2";
+}
+
+/*sign*/
+
+.xp_symbol_Aries:before{
+    content:"\41";
+}
+
+.xp_symbol_Taurus:before{
+    content:"\42";
+}
+
+.xp_symbol_Gemini:before{
+    content:"\43";
+}
+
+.xp_symbol_Cancer:before{
+    content:"\44";
+}
+
+.xp_symbol_Leo:before{
+    content:"\45";
+}
+
+.xp_symbol_Virgo:before{
+    content:"\46";
+}
+
+.xp_symbol_Libra:before{
+    content:"\47";
+}
+
+.xp_symbol_Scorpio:before{
+    content:"\48";
+}
+
+.xp_symbol_Sagittarius:before{
+    content:"\49";
+}
+
+.xp_symbol_Capricorn:before{
+    content:"\4a";
+}
+
+.xp_symbol_Aquarius:before{
+    content:"\4b";
+}
+
+.xp_symbol_Pisces:before{
+    content:"\4c";
+}
+
+/*number*/
+
+.xp_symbol_0:before{
+    content:"0";
+}
+
+.xp_symbol_1:before{
+    content:"1";
+}
+
+.xp_symbol_2:before{
+    content:"2";
+}
+
+.xp_symbol_3:before{
+    content:"3";
+}
+
+.xp_symbol_4:before{
+    content:"4";
+}
+
+.xp_symbol_5:before{
+    content:"5";
+}
+
+.xp_symbol_6:before{
+    content:"6";
+}
+
+.xp_symbol_7:before{
+    content:"7";
+}
+
+.xp_symbol_8:before{
+    content:"8";
+}
+
+.xp_symbol_9:before{
+    content:"9";
+}
+
+.xp_symbol_10:before{
+    content:"10";
+}
+
+.xp_symbol_11:before{
+    content:"11";
+}
+
+.xp_symbol_12:before{
+    content:"12";
+}
+
+.xp_symbol_Rx:before{
+    content:'\da';
+}
+
+.xp_symbol_R:before{
+    content:'\db';
+}
+
+.xp_symbol_aspect_0:before{
+    content:'\e1';
+}
+
+.xp_symbol_aspect_180:before{
+    content:'\e2';
+}
+
+.xp_symbol_aspect_90:before{
+    content:'\e3';
+}
+
+.xp_symbol_aspect_120:before{
+    content:'\e4';    
+}
+
+.xp_symbol_aspect_60:before{
+    content:'\e5';    
+}
+
+.xp_symbol_aspect_30:before{
+    content:'\e6';    
+}
+
+.xp_symbol_aspect_150:before{
+    content:'\e7';    
+}
+
+.xp_symbol_aspect_45:before{
+    content:'\e8';    
+}
+
+.xp_symbol_aspect_135:before{
+    content:'\e9';    
+}
+
+.xp_symbol_aspect_72:before{
+    content:'\ea';    
+}
+
+.xp_symbol_aspect_144:before{
+    content:'\eb';    
+}
+
+.xp_gry_symbol{
+	font-family: 'web_ixingpan';
+    font-style: normal;
+    font-weight: normal;    
+    font-size:18px;
+    padding:0 3px 0 0;
+}
+.xp_gry_symbol:before{
+	padding-left:3px;
+}
+
+
+#divXPShowTip{
+	padding:10px;
+    border: 1px solid #F1D031;
+    background-color: #FFFFA3;
+    color: #555;
+    font-size:14px;
+    line-height:1.5;
+}
+
+.xp_symbol_aspect_0,
+.xp_tip_degree_0{
+	color:#99CCFF;
+}
+
+.xp_symbol_aspect_30,
+.xp_symbol_aspect_150,
+.xp_tip_degree_30,
+.xp_tip_degree_150{
+	color:#ff00ff;
+}
+
+.xp_symbol_aspect_45,
+.xp_symbol_aspect_135,
+.xp_tip_degree_45,
+.xp_tip_degree_135{
+	color:#7f7f00;
+}
+
+.xp_symbol_aspect_60,
+.xp_tip_degree_60{
+
+
+
+	color:#00B8B8;
+}
+
+.xp_symbol_aspect_36,
+.xp_symbol_aspect_72,
+.xp_symbol_aspect_144,
+.xp_tip_degree_36, 
+.xp_tip_degree_72,
+.xp_tip_degree_144{
+	color:#404040;
+}
+
+.xp_symbol_aspect_90,
+.xp_tip_degree_90{
+	color:red;
+}
+
+.xp_symbol_aspect_120,
+.xp_tip_degree_120{
+	color:#006633;
+}
+
+.xp_symbol_aspect_180,
+.xp_tip_degree_180{
+	color:blue;
+}

@@ -1,0 +1,105 @@
+ /* Orange Color #fa6116 & #c75c0f */
+
+ .btn-ixp:focus, .btn-ixp-2,
+ ul.why li:before,
+ .progress .progress-bar,
+ .accordionMod .panel-heading .current,
+ #current:after,
+ .flat .plan li.plan-name,
+ .flat .plan.featured:hover li.plan-name,
+ #filters ul li a:hover h5,
+ #filters ul li a.active h5,
+ .post-date a.date i, .shape .bg, .sixteen i:hover, .tp-leftarrow.default:hover, .tp-rightarrow.default:hover, .nvr-pf-img div.rollover, div.frameimg div.rollover  {
+     background: #fa6116;
+ }
+
+ .bg-color, .social-btn:hover, .social-btn:focus {
+     background: #fa6116;
+     color: #fff;
+ }
+
+ .subscribe-btn {
+     background: #fa6116;
+     cursor: pointer;
+ }
+
+ div.content-box.big div.content-box-info p, .content-box-info h4 {
+     color: #e7f7ff;
+ }
+
+ .about-wrap {
+     background: #fa6116 no-repeat fixed center center;
+ }
+
+
+ .subscribe-btn:focus, .subscribe-btn:hover,
+ .ch-item .ch-info-front {
+     background: #c75c0f;
+     color: white;
+ }
+
+
+ .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus, .pager li > a:hover, .pager li > a:focus {
+     background-color: #fa6116;
+     color: #fff;
+     border: none;
+ }
+
+
+ .spinner {
+     border-top-color: #fa6116;
+ }
+
+ .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+     border-color: #fa6116;
+ }
+
+ .btn-ixp-2:hover, .btn-ixp-2:active, .btn-ixp-2 {
+     box-shadow: 0 4px #c75c0f;
+ }
+
+ .promo i {
+     border: 2px solid #fa6116;
+ }
+
+ .promo:hover i, ul.more-services li div:hover
+ {
+     background-color: #fa6116;
+     color: #ffffff;
+ }
+
+ .team-wrapper .carousel-indicators li.active {
+     background-color: #fa6116;
+     border: 1px solid #fa6116;
+ }
+
+ .author-content, #cn-tabs .service, .comment-des, .contact-box {
+     border-bottom-color:#fa6116;
+ }
+
+ .outlined-title {
+     border-left: 4px solid #fa6116;
+     border-right: 4px solid #fa6116;
+ }
+
+ a, a:hover, a:focus,
+ .flat .plan li > strong,
+ #slider_left i:hover,
+ #slider_right i:hover,
+ .text-color,
+ .cl-effect-21 a:hover,
+ .cl-effect-21 a:focus,
+ .cl-effect-21 .active a,
+ .cl-effect-21 .active a:focus,
+ .navbar-nav > li > a:hover,
+ .navbar-nav > li > a:focus,
+ .navbar-nav > li.active > a,
+ .post-date a.date strong,
+ .pagination > li > a,
+ .pagination > li > span,
+ .fun,
+ .btn-ixp-1:hover,
+ .btn-ixp-1:active, .promo i, .about-box-content h4, .about-icon i, .sixteen i,
+#xptypes a:hover,#columns a:hover{
+     color: #fa6116;
+ }

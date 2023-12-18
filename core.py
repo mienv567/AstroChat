@@ -29,6 +29,7 @@ class Core():
         self.birthday_time = birthday
         self.soup = None
         self.glon_deg = ''
+        self.chart_svg_html = ''
 
         self.star_dict: Dict[str, Star] = {}
         self.house_dict: Dict[int, House] = {}
@@ -107,6 +108,18 @@ class Core():
         return f'上升{asc}', f'上升{asc}太阳{solar}'
 
 
+    def get_chart_svg(self):
+        html_str = '<html><meta http-equiv="Content-type" content="text/html; charset=utf-8" /><link href="https://xp.ixingpan.com/statics/css/bootstrap.min.css" rel="stylesheet" type="text/css" /><link rel="stylesheet" href="https://xp.ixingpan.com/statics/css/style.css?v=2021030401"/><link rel="stylesheet" href="https://xp.ixingpan.com/statics/css/font-xp-gryph.css?v=2016083101" /><link rel="stylesheet" type="text/css" href="https://xp.ixingpan.com/statics/css/chart.css?v=2016082402" title="chart-default" media="all" /><link rel="stylesheet" type="text/css" href="https://xp.ixingpan.com/statics/css/graphy-chart.css?v=2016062801" id="chartMode"/><link rel="stylesheet" href="https://xp.ixingpan.com/statics/css/chart-extend.css?v=2016082402" id="aspect-line-type-css"/><div style="width: 75%;margin:0px;padding:0px"><div id="achart" class="text-center" style="margin: auto;padding:5px 10px 15px 5px;">{}</div></div></html>'
+
+        svg_tags = self.soup.find_all('svg')
+
+        svg_content = svg_tags[0].prettify()  # 获取SVG标签的内容
+        # print(svg_content)
+        # svg = tables[0].text.strip()
+
+        self.chart_svg_html = html_str.format(svg_content)
+
+
     def _http_ixingpan(self):
         def _load_ixingpan_dist():
             area_dict = {'山东省':
@@ -179,7 +192,7 @@ class Core():
         print(url)
 
         # 发送GET请求
-        response = requests.get(url, cookies={'xp_planets_natal': '0,1,2,3,4,5,6,7,8,9,25,26,27,28,15,19,10,29', 'xp_aspects_natal': '0:8,180:8,120:8,90:8,60:8'})
+        response = requests.get(url, cookies={'chart_mode': 'classic-chart', 'xp_planets_natal': '0,1,2,3,4,5,6,7,8,9,25,26,27,28,15,19,10,29', 'xp_aspects_natal': '0:8,180:8,120:8,90:8,60:8'})
 
         # 获取返回的HTML源码
         html_str = response.text

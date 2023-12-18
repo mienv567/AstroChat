@@ -1,0 +1,47 @@
+
+/* --------------------------------- aspect orblevel --------------------------------- */
+
+.OrbLevel1{
+	stroke-width:1.2;
+}
+
+.OrbLevel2{
+	stroke-width:1.3;
+	stroke-dasharray:1,1.8;
+}
+
+.OrbLevel3{
+	stroke-width:1.3;
+	stroke-dasharray:1,2.8;
+}
+
+.OrbLevel4{
+	stroke-width:1.3;
+	stroke-dasharray:1,5;
+}
+
+.OrbLevel5{
+	stroke-width:1.3;
+	stroke-dasharray:1,8;
+}
+
+#aspects path.Conjunction_2.OrbLevel1 {
+	stroke-width:4;
+	stroke-dasharray:4,0;
+}
+
+
+#aspects path.Conjunction_2.OrbLevel2 {
+	stroke-width:3;
+	stroke-dasharray:3,0;
+}
+
+#aspects path.Conjunction_2.OrbLevel3 {
+	stroke-width:2;
+	stroke-dasharray:2,0;
+}
+
+#aspects path.Conjunction_2.OrbLevel4 {
+	stroke-width:1;
+	stroke-dasharray:1,0;
+}

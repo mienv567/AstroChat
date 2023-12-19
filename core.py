@@ -175,7 +175,7 @@ class Core():
 
             msg_star_loc = f'{star_name}落{house}宫，在{constellation}座'
             msg_lord = '' if len(star_obj.lord_house_vec) == 0 else f'是{"、".join([str(item) for item in star_obj.lord_house_vec])}的宫主星'
-            msg_score = f'黄道得分:{score}' if star_name not in {'天王', '海王', '冥王', '凯龙', '婚神', '福点'} else ''
+            msg_score = f'星体得分:{score}' if star_name not in {'天王', '海王', '冥王', '凯龙', '婚神', '福点'} else ''
             msg_hurong = '' if rec_msg2 == '' else f'互溶接纳信息：{rec_msg2}'
 
             # msg = f'{msg_star_loc}，{msg_lord}，在{constellation}座，{msg_score} {msg_hurong}， {is_afflicted}'

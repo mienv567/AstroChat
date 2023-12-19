@@ -350,7 +350,7 @@ def debug():
     st.markdown('\n'.join(msg))
 
 
-section_kv = {'高中前学业': ['学业-高中前'],
+topic_term_dict = {'高中前学业': ['学业-高中前'],
                   '高中后学业': ['学业-高中后'],
                   '婚姻': ['婚姻', '配偶'],
                   '财富': ['财富'],
@@ -363,11 +363,12 @@ def generate_context(intent_vec):
 
     llm_dict = {}
     for section, sub_dict in filtered_dict.items():
-        if section not in intent_vec:
-            continue
         for skey, interpret in sub_dict.items():
             interpret = interpret.strip('。')
-            for topic, svec in section_kv.items():
+            for topic, svec in topic_term_dict.items():
+                if topic not in intent_vec:
+                    continue
+
                 for term in svec:
                     if term in section or term in interpret:
                         if topic not in llm_dict:
@@ -396,8 +397,15 @@ def user_intent(query):
         )
 
         # print(response)
+        # print(type(response))
         if response['success']:
-            return json.loads(response['data']['choices'][0]['content']['intent'])
+            c = response['data']['choices'][0]['content']
+            # print(c)
+            # print(type(c))
+            obj = json.loads(c)
+            # print(obj)
+            # print(type(obj))
+            return json.loads(obj)['intent']
         else:
             return None
 
@@ -419,12 +427,13 @@ def generate_llm_input(intent_vec, question='我的恋爱怎么样'):
     # Question: {question}
     # """
     context = generate_context(intent_vec)
-    guest_info = '\n'.join(st.session_state.core.guest_desc_vec)
+    guest_info = '。\n'.join(st.session_state.core.guest_desc_vec)
     # question = '我的婚姻怎么样？'
 
     prompt_tmplate = f'现在你是一名占星师，' \
-                     f'使用下面的上下文和客户星盘回答最后的问题。如果你不知道答案，请直说你不知道，不要编造上下文和客户星盘，也不要试图编造答案。若星体得分>2解读为旺，<-2解读为衰，严重受克也属于衰。' \
-                     f'\n上下文：{context}\n' \
+                     f'请仅根据提供的上下文、客户星盘回答问题，不要使用任何外部知识。如果你不知道答案，请直说你不知道，禁止编造上下文和客户星盘，也不要试图编造答案。若星体得分>2要解读旺的部分，<-2解读衰的部分，严重受克也属于衰。' \
+                     f'不要参考与问题无关的上下文。' \
+                     f'\n\n上下文：{context}\n' \
                      f'\n客户星盘：{guest_info}\n' \
                      f'\n问题：{question}'
 
@@ -503,24 +512,29 @@ if st.session_state.start_btn == 1:
         add_user_history(user_input)
 
         intent_vec = user_intent(query=user_input)
+        print(intent_vec)
+        print(type(intent_vec))
+
         if intent_vec is None or len(intent_vec) == 0:
             response = fake_robot_response('我只回答占星相关的问题哦~')
+        elif '占星教学' in intent_vec:
+            response = fake_robot_response('你好像在让我教你？我只能回答有限的占星问题哦~')
         else:
             final_user_input = generate_llm_input(question=user_input, intent_vec=intent_vec)
             print(final_user_input)
 
             response = fetch_chatglm_turbo_response(final_user_input)
 
-            # llm_flag = False
-            res_vec = []
-            for event in response:
-                response_data = event.data
-                res_vec.append(response_data)
-                message_placeholder.markdown(''.join(res_vec))
+        # llm_flag = False
+        res_vec = []
+        for event in response:
+            response_data = event.data
+            res_vec.append(response_data)
+            message_placeholder.markdown(''.join(res_vec))
 
-                if isinstance(event, FakeData):
-                    time.sleep(0.05)
-                else:
-                    llm_flag = True
+            if isinstance(event, FakeData):
+                time.sleep(0.05)
+            else:
+                llm_flag = True
 
-            add_robot_history(''.join(res_vec))
+        add_robot_history(''.join(res_vec))

@@ -64,6 +64,21 @@ def fake_robot_response(text):
     return blocks
 
 
+def fetch_intent(user_input):
+    response = zhipuai.model_api.invoke(
+        model="chatglm_turbo",
+        prompt=[
+            {"role": "user", "content": user_input},
+        ]
+    )
+
+    print(response)
+    if response['success']:
+        return json.load(response['data']['choices'][0]['content'])['intent']
+    else:
+        return None
+
+
 def fetch_chatglm_turbo_response(user_input):
     # if st.session_state.cur_task == time_loc_task:
         # user_input = prompt_time_loc.format(user_input)
@@ -382,17 +397,31 @@ def generate_context():
     return '\n'.join(final_context)
 
 
+def user_intent(query):
+    prompt_template = f'从下面话题集合中找出query涉及的话题（可能涉及到多个话题），返回的结果限定在如下话题集合内，若集合中没有匹配到结果就返回空，不要编造；' \
+                      '返回JSON格式的结果，要包含intent键，如：{"intent": ["婚姻", "财富"]}。' \
+                      '\n话题集合：教学类、高中前学业、高中后学业、婚姻、财富、职业、恋爱、健康、推运' \
+                      f'\nquery：{query}'
+    print(prompt_template)
+
+    response = fetch_intent(prompt_template)
+
+
+
 def generate_llm_input(question='我的恋爱怎么样'):
     # prompt_template = """Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, NEVER try to make up an answer.
     # Context:{context}
     # Question: {question}
     # """
+
+    intent = user_intent(query=question)
+
     context = generate_context()
     guest_info = '\n'.join(st.session_state.core.guest_desc_vec)
     # question = '我的婚姻怎么样？'
 
-    prompt_tmplate = f'现在你是一名占星师，正在根据客人的星盘信息回答问题。' \
-                     f'使用下面的上下文、客户星盘信息来回答最后的问题。如果你不知道答案，请直说你不知道，不要编造答案。；黄道得分>2解读为旺，<-2解读为衰，严重受克也属于衰。' \
+    prompt_tmplate = f'现在你是一名占星师，' \
+                     f'使用下面的上下文和客户星盘回答最后的问题。如果你不知道答案，请直说你不知道，不要编造上下文和客户星盘，也不要试图编造答案。若星体得分>2解读为旺，<-2解读为衰，严重受克也属于衰。' \
                      f'\n上下文：{context}\n' \
                      f'\n客户星盘：{guest_info}\n' \
                      f'\n问题：{question}'

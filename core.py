@@ -270,7 +270,7 @@ class Core():
             localized_dt = pytz.timezone('Asia/Shanghai').localize(dt)
             is_dst = localized_dt.dst().total_seconds() != 0
 
-            # print(f'in is_dst, time_str:{time_str}, is_dst={is_dst}')
+            print(f'in is_dst, time_str:{time_str}, is_dst={is_dst}')
 
             if is_dst:
                 return 1

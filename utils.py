@@ -4,10 +4,6 @@ import json
 from typing import Dict, Tuple, List
 import re
 
-
-greeting_msg = '您好，我是「桥下指北」自助占星机器人，请叫我小乔~~'
-greeting_msg2 = '占星选择出生时间和地址，最好精确到小时和区县'
-
 time_loc_task, date_task, time_task, loc_task, confirm_task, ixingpan_task, moon_solar_asc_task = '输入时间地点', '输入出生日期', '输入出生时间', '输入出生地点', '确认出生信息', '开始排盘', '日月升'
 prompt_time_loc = '格式化下面问题中的时间、位置信息。\n返回格式为：时间:%Y-%m-%d %H:%M 位置：省市区。\n不要回复额外信息，如果问题中提取不到的信息就回复无，不要编造回答。\n问题：{}'
 
@@ -71,8 +67,38 @@ def parse_pan(dist, birthday, is_dst):
     _parse_ixingpan_aspect(soup_ixingpan)
 
 
+def generate_prompt():
+    filtered_dict = init_llm_knowledge_dict()
+    section_kv = {'高中前学业': ['学业-高中前'],
+                  '高中后学业': ['学业-高中后'],
+                  '婚姻': ['婚姻', '配偶'],
+                  '财富': ['财富'],
+                  '职业': ['职业'],
+                  '恋爱': ['恋爱']}
+
+    llm_dict = {}
+    for section, sub_dict in filtered_dict.items():
+        for skey, interpret in sub_dict.items():
+            for topic, svec in section_kv.items():
+                for term in svec:
+                    if term in section or term in interpret:
+                        if topic not in llm_dict:
+                            llm_dict[topic] = []
+
+                        llm_dict[topic].append(f'{skey} = {interpret}')
+
+    final_context = []
+    for k, svec in llm_dict.items():
+        topic = f'\n下面关于{k}:'
+        interpret = '\n'.join(svec)
+
+        msg = f'{topic}\n{interpret}'
+        final_context.append(msg)
+
+    return '\n'.join(final_context)
+
+
 if __name__ == '__main__':
-    vec = [1,2,3,4,5,6]
-    print(vec.index(6))
+    print(generate_prompt())
     #area_dict = load_ixingpan_area()
     #print(area_dict)

@@ -8,7 +8,6 @@ import datetime
 from typing import Dict, List
 import streamlit as st
 import zhipuai
-from utils import greeting_msg, greeting_msg2
 from utils import init_llm_knowledge_dict
 from utils import time_loc_task, date_task, time_task, loc_task, confirm_task, ixingpan_task, moon_solar_asc_task
 from core import Core
@@ -35,29 +34,6 @@ def set_cur_task(cur):
 class FakeData:
     def __init__(self, data):
         self.data = data
-
-
-def do_pipeline(bot_msg) -> str:
-    queue = st.session_state.task_queue
-    if len(queue) == 0:
-        # TODO: 解盘结束，欢迎继续咨询每年运势
-        pass
-
-    cur_task = queue[0]
-
-    if cur_task == time_loc_task:
-        birthday, dist, is_dst, toffset, loc = _prepare_http_data(bot_msg)
-        soup_ixingpan = _fetch_ixingpan_soup(dist=dist, birthday_time=birthday, dst=is_dst, female=1)
-
-        print(birthday, dist, is_dst, toffset, loc)
-
-        if birthday != '无' and loc != '无' and dist != '':
-            st.session_state.task_queue.remove(time_loc_task)
-            st.session_state.task_queue.remove(time_task)
-            st.session_state.task_queue.remove(loc_task)
-
-            msg = f'\n\n将按如下信息排盘：<br>出生日期:{birthday}\t出生地点:{loc}\t区域ID:{dist}\t日光时:{is_dst}'
-            return msg
 
 
 def add_user_history(text):
@@ -156,7 +132,7 @@ def load_knowledge_file():
 
 
 # 设置页面标题、图标和布局
-st.set_page_config(page_title="桥下指北", page_icon=":robot:")
+st.set_page_config(page_title="桥下甄选", page_icon=":robot:")
 # st.set_page_config(page_title="桥下指北", page_icon=":robot:", layout="wide")
 
 # 初始化历史记录和past key values
@@ -208,7 +184,7 @@ if "past_key_values" not in st.session_state:
 
 
 # --------------------------------- 搞 Greeting --------------------
-st.markdown("#### 占星机器人:rainbow[「小乔」]为您服务:tulip::cherry_blossom::rose::hibiscus::sunflower::blossom:   ")
+st.markdown("### :rainbow[「桥下甄选」] *——基于大数据的占星机器人* ")
 st.markdown("> 占星服务，请选择:rainbow[「诞生日」]和:rainbow[「诞生地」]，建议精确到小时、区县。   ")
 st.markdown("")
 
@@ -323,6 +299,7 @@ def on_button_click():
                      '_is_received_or_mutal',
                      '_set_session_afflict',
                      'get_chart_svg',
+                     '_parse_web_interpret',
                      'gen_guest_info']
 
     step_vol = int(100.0/len(execute_chain))
@@ -358,49 +335,69 @@ def filter_nested_dict(knowledge_dict, filter_keys):
         if filtered_sub_dict:
             filtered_dict[section_name] = filtered_sub_dict
 
-    print(filtered_dict)
+    # print(filtered_dict)
 
     st.session_state.filtered_dict = filtered_dict
     return filtered_dict
 
 
-def gen_llm_knowledge():
-    msg = ['| 列1 | 列2 |', '| --- | --- |']
+def debug():
+    msg = ['| section | key |', '| --- | --- |']
     for section, sub_dict in st.session_state.filtered_dict.items():
         for key, val in sub_dict.items():
             msg.append(f'|{section}|{key}|')
 
     st.markdown('\n'.join(msg))
 
-    llm_vec = []
-    for section, sub_dict in st.session_state.filtered_dict.items():
-        prefix = '高中前学业'
 
-        if section == '学业-高中前':
-            prefix = '高中前学业'
-        elif section == '学业-高中后':
-            prefix = '高中后学业'
-        elif '婚姻' in section or '配偶' in section:  # TODO：①增加'x宫主金星的pattern' ②几飞几，还是要按topic分开
-            prefix = '关于婚姻'
-        else:
-            continue
+def generate_context():
+    filtered_dict = st.session_state.filtered_dict
+    section_kv = {'高中前学业': ['学业-高中前'],
+                  '高中后学业': ['学业-高中后'],
+                  '婚姻': ['婚姻', '配偶'],
+                  '财富': ['财富'],
+                  '职业': ['职业'],
+                  '恋爱': ['恋爱']}
 
-        sub_vec = []
-        for key, val in sub_dict.items():
-            val = val.strip('。')
-            sub_vec.append(f'{key},{val}')
+    llm_dict = {}
+    for section, sub_dict in filtered_dict.items():
+        for skey, interpret in sub_dict.items():
+            interpret = interpret.strip('。')
+            for topic, svec in section_kv.items():
+                for term in svec:
+                    if term in section or term in interpret:
+                        if topic not in llm_dict:
+                            llm_dict[topic] = []
 
-        final_str = f'{prefix}:{";".join(sub_vec)}'
-        llm_vec.append(final_str)
+                        llm_dict[topic].append(f'{skey} = {interpret}')
 
-    for msg in llm_vec:
-        st.markdown(f'- {msg}')
+    final_context = []
+    for k, svec in llm_dict.items():
+        topic = f'\n关于{k}:'
+        interpret = '\n'.join(svec)
+
+        msg = f'{topic}\n{interpret}'
+        final_context.append(msg)
+
+    return '\n'.join(final_context)
 
 
+def generate_llm_input(question='我的恋爱怎么样'):
+    # prompt_template = """Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, NEVER try to make up an answer.
+    # Context:{context}
+    # Question: {question}
+    # """
+    context = generate_context()
+    guest_info = '\n'.join(st.session_state.core.guest_desc_vec)
+    # question = '我的婚姻怎么样？'
 
-    # st.markdown(st.session_state.core.guest_desc_vec)
-    # st.markdown(st.session_state.core.star_loc_vec)
-    # st.markdown(st.session_state.core.ruler_fly_vec)
+    prompt_tmplate = f'现在你是一名占星师，正在根据客人的星盘信息回答问题。' \
+                     f'使用下面的上下文、客户星盘信息来回答最后的问题。如果你不知道答案，请直说你不知道，不要编造答案。；黄道得分>2解读为旺，<-2解读为衰，严重受克也属于衰。' \
+                     f'\n上下文：{context}\n' \
+                     f'\n客户星盘：{guest_info}\n' \
+                     f'\n问题：{question}'
+
+    return prompt_tmplate
 
 
 if st.session_state.finished_curl_natal:
@@ -408,7 +405,8 @@ if st.session_state.finished_curl_natal:
     st.markdown('#### :rainbow[星图信息]')
     st.markdown(st.session_state.core.chart_svg_html, unsafe_allow_html=True)
 
-    key_all = st.session_state.core.guest_desc_vec
+    key_all = []
+    key_all.extend(st.session_state.core.guest_desc_vec)
     key_all.extend(st.session_state.core.star_loc_vec)
     key_all.extend(st.session_state.core.ruler_fly_vec)
     key_all.extend(st.session_state.core.llm_recall_key)
@@ -428,12 +426,21 @@ if st.session_state.finished_curl_natal:
             st.markdown('----')
             st.markdown(f'#### :rainbow[{key}]')
             st.markdown(f'> {val}')
+    else:  # TODO：目前走http，之后抓下来（放小红书）
+        for k, v in st.session_state.core.interpret_asc.items():
+            st.markdown('----')
+            st.markdown(f'#### :rainbow[{k}]')
+            st.markdown(f'> {v}')
 
-    st.markdown(st.session_state.core.guest_desc_vec)
-    st.markdown(st.session_state.core.star_loc_vec)
-    st.markdown(st.session_state.core.ruler_fly_vec)
+    # st.markdown(st.session_state.core.guest_desc_vec)
+    # st.markdown(st.session_state.core.star_loc_vec)
+    # st.markdown(st.session_state.core.ruler_fly_vec)
+    #
+    # debug()
 
-    gen_llm_knowledge()
+    # print(generate_llm_input(question=''))
+
+
 
 
 # 渲染聊天历史记录
@@ -460,11 +467,14 @@ if st.session_state.start_btn == 1:
 
 
     # 如果用户输入了内容,则生成回复
-    if st.session_state.cur_task not in [time_task, date_task] and user_input:
+    if user_input:
         input_placeholder.markdown(user_input)
         add_user_history(user_input)
 
-        response = fetch_chatglm_turbo_response(user_input)
+        final_user_input = generate_llm_input(user_input)
+        print(final_user_input)
+
+        response = fetch_chatglm_turbo_response(final_user_input)
 
         # llm_flag = False
         res_vec = []
@@ -478,10 +488,6 @@ if st.session_state.start_btn == 1:
             else:
                 llm_flag = True
 
-        # if llm_flag:
-        #     pipeline_msg = do_pipeline(bot_msg=''.join(res_vec))
-
-            # res_vec.append(pipeline_msg)
 
         # history.append({'content': ''.join(res_vec), 'role': "assistant"})
         add_robot_history(''.join(res_vec))
@@ -489,5 +495,3 @@ if st.session_state.start_btn == 1:
         # 更新历史记录和past key values
         # st.session_state.history = history
         # st.session_state.past_key_values = past_key_values
-
-

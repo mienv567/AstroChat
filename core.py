@@ -31,6 +31,7 @@ class Core():
         self.glon_deg = ''
         self.chart_svg_html = ''
 
+        # 核心字典数据, x落x座、x落x宫、x宫主飞x宫
         self.star_dict: Dict[str, Star] = {}
         self.house_dict: Dict[int, House] = {}
         self.constellation_dict: Dict[str, Constellation] = {}
@@ -38,7 +39,7 @@ class Core():
         self.star_ruler_dict: Dict[str, List[int]] = {}
         self.afflict_dict: Dict[str, Affliction] = {}  # {木星: afflict}
 
-        # File Dict
+        # File Dict From knowledge_web.ini
         self.knowledge_dict: Dict[str, Dict[str, str]] = {}
         self.boundry_dict: Dict[str, Dict[str, List[int]]] = dict()  # {白羊: {木星: [0, 6]}}
 
@@ -48,6 +49,10 @@ class Core():
         self.star_loc_vec = []
         self.guest_desc_vec = []
 
+        # Web-Interpret, 找 <div class='interpretation-section'>, <div class='moreinterp'>
+        self.interpret_asc = {}
+        self.interpret_sum = {}
+        self.interpret_moon = {}
 
     def execute(self,):
         self._init_knowledge_dict()
@@ -65,7 +70,6 @@ class Core():
 
         # 设置受克信息
         self._set_session_afflict()
-
 
     # 根据排盘信息，生成用户描述
     def gen_guest_info(self,):
@@ -169,14 +173,16 @@ class Core():
             # 搞落宫
             self.star_loc_vec.append(f'{star_name}落{house}宫')
 
-            msg_hurong = '' if rec_msg2 == '' else f'互溶接纳信息：{rec_msg2}'
+            msg_star_loc = f'{star_name}落{house}宫，在{constellation}座'
             msg_lord = '' if len(star_obj.lord_house_vec) == 0 else f'是{"、".join([str(item) for item in star_obj.lord_house_vec])}的宫主星'
-            msg_score = f'黄道得分:{score},' if star_name not in {'天王', '海王', '冥王', '凯龙', '婚神', '福点'} else ''
+            msg_score = f'黄道得分:{score}' if star_name not in {'天王', '海王', '冥王', '凯龙', '婚神', '福点'} else ''
+            msg_hurong = '' if rec_msg2 == '' else f'互溶接纳信息：{rec_msg2}'
 
-            msg = f'{star_name}落{house}宫，{msg_lord}, 在{constellation}座，{msg_score} {msg_hurong}, {is_afflicted}'
-            self.guest_desc_vec.append(msg)
+            # msg = f'{msg_star_loc}，{msg_lord}，在{constellation}座，{msg_score} {msg_hurong}， {is_afflicted}'
+            tmp = [msg_star_loc, msg_score, msg_lord, msg_hurong, f'{is_afflicted}']
+            print('-->', tmp)
+            self.guest_desc_vec.append('，'.join([item for item in tmp if item != '']))
             # logger.debug(msg)
-
 
     def get_chart_svg(self):
         html_str = '<html><meta http-equiv="Content-type" content="text/html; charset=utf-8" /><link href="https://xp.ixingpan.com/statics/css/bootstrap.min.css" rel="stylesheet" type="text/css" /><link rel="stylesheet" href="https://xp.ixingpan.com/statics/css/style.css?v=2021030401"/><link rel="stylesheet" href="https://xp.ixingpan.com/statics/css/font-xp-gryph.css?v=2016083101" /><link rel="stylesheet" type="text/css" href="https://xp.ixingpan.com/statics/css/chart.css?v=2016082402" title="chart-default" media="all" /><link rel="stylesheet" type="text/css" href="https://xp.ixingpan.com/statics/css/graphy-chart.css?v=2016062801" id="chartMode"/><link rel="stylesheet" href="https://xp.ixingpan.com/statics/css/chart-extend.css?v=2016082402" id="aspect-line-type-css"/><div style="width: 100%;margin:0px;padding:0px"><div id="achart" class="text-center" style="margin: auto;padding:5px 10px 15px 5px;">{}</div></div></html>'
@@ -190,6 +196,24 @@ class Core():
 
         self.chart_svg_html = res
 
+    def _parse_web_interpret(self):
+        div_tags = self.soup.find_all('div', class_='interpretation-section')
+        for div_tag in div_tags:
+            # 找:太阳双子这样的标题
+            span_tag = div_tag.find('span')
+            if span_tag:
+                title = span_tag.text
+                if not title.startswith("上升"):
+                    continue
+
+            # 找解析
+            p_tags = div_tag.find_all('p')
+            filtered_p_tags = [p_tag for p_tag in p_tags if not p_tag.find_parent(class_='interpretation-section-header')]
+            interpret = filtered_p_tags[0].text.strip().replace('来源：点击查看', '')
+            # print('-->', interpret)
+
+            self.interpret_asc[title] = interpret
+            break
 
     def _http_ixingpan(self):
         def _load_ixingpan_dist():
@@ -246,7 +270,7 @@ class Core():
             localized_dt = pytz.timezone('Asia/Shanghai').localize(dt)
             is_dst = localized_dt.dst().total_seconds() != 0
 
-            print(f'in is_dst, time_str:{time_str}, is_dst={is_dst}')
+            # print(f'in is_dst, time_str:{time_str}, is_dst={is_dst}')
 
             if is_dst:
                 return 1
@@ -275,7 +299,6 @@ class Core():
         soup = BeautifulSoup(html_str, 'html.parser')
 
         self.soup = soup
-
 
     def _parse_glon_glat(self,):
         tables = self.soup.find_all('table')
@@ -558,10 +581,11 @@ class Core():
                     self.star_dict[star_a].recepted_dict[star_b] = r
 
                 if b_receive:
-                    print(f'{star_a} 被 {star_b} 接纳，{level}')
-
+                    # print(f'{star_a} 被 {star_b} 接纳，{level}')
+                    pass
                 if b_mutal:
-                    print(f'{star_a} {star_b} 互容')
+                    # print(f'{star_a} {star_b} 互容')
+                    pass
 
 
     """ ----------------------- 受克情况 ------------------------ """

@@ -4,6 +4,8 @@ import json
 from typing import Dict, Tuple, List
 import re
 
+import zhipuai
+
 time_loc_task, date_task, time_task, loc_task, confirm_task, ixingpan_task, moon_solar_asc_task = '输入时间地点', '输入出生日期', '输入出生时间', '输入出生地点', '确认出生信息', '开始排盘', '日月升'
 prompt_time_loc = '格式化下面问题中的时间、位置信息。\n返回格式为：时间:%Y-%m-%d %H:%M 位置：省市区。\n不要回复额外信息，如果问题中提取不到的信息就回复无，不要编造回答。\n问题：{}'
 
@@ -98,7 +100,16 @@ def generate_prompt():
     return '\n'.join(final_context)
 
 
+
+
+
 if __name__ == '__main__':
-    print(generate_prompt())
+    prompt_template = f'从下面话题集合中找出query涉及的话题（可能涉及到多个话题），返回的结果限定在如下话题集合内，若集合中没有匹配到结果就返回空，不要编造；' \
+                      '返回JSON格式的结果，要包含intent键，如：{"intent": ["婚姻", "财富"]}。' \
+                      '\n话题集合：教学类、高中前学业、高中后学业、婚姻、财富、职业、恋爱、健康、推运' \
+                      f'\nquery：我的健康如何'
+    print(prompt_template)
+
+    print(response['intent'])
     #area_dict = load_ixingpan_area()
     #print(area_dict)

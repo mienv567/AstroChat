@@ -64,21 +64,6 @@ def fake_robot_response(text):
     return blocks
 
 
-def fetch_intent(user_input):
-    response = zhipuai.model_api.invoke(
-        model="chatglm_turbo",
-        prompt=[
-            {"role": "user", "content": user_input},
-        ]
-    )
-
-    print(response)
-    if response['success']:
-        return json.load(response['data']['choices'][0]['content'])['intent']
-    else:
-        return None
-
-
 def fetch_chatglm_turbo_response(user_input):
     # if st.session_state.cur_task == time_loc_task:
         # user_input = prompt_time_loc.format(user_input)
@@ -365,17 +350,21 @@ def debug():
     st.markdown('\n'.join(msg))
 
 
-def generate_context():
-    filtered_dict = st.session_state.filtered_dict
-    section_kv = {'高中前学业': ['学业-高中前'],
+section_kv = {'高中前学业': ['学业-高中前'],
                   '高中后学业': ['学业-高中后'],
                   '婚姻': ['婚姻', '配偶'],
                   '财富': ['财富'],
                   '职业': ['职业'],
                   '恋爱': ['恋爱']}
 
+def generate_context(intent_vec):
+    filtered_dict = st.session_state.filtered_dict
+
+
     llm_dict = {}
     for section, sub_dict in filtered_dict.items():
+        if section not in intent_vec:
+            continue
         for skey, interpret in sub_dict.items():
             interpret = interpret.strip('。')
             for topic, svec in section_kv.items():
@@ -398,25 +387,38 @@ def generate_context():
 
 
 def user_intent(query):
+    def fetch_intent(user_input):
+        response = zhipuai.model_api.invoke(
+            model="chatglm_turbo",
+            prompt=[
+                {"role": "user", "content": user_input},
+            ]
+        )
+
+        # print(response)
+        if response['success']:
+            return json.loads(response['data']['choices'][0]['content']['intent'])
+        else:
+            return None
+
+
     prompt_template = f'从下面话题集合中找出query涉及的话题（可能涉及到多个话题），返回的结果限定在如下话题集合内，若集合中没有匹配到结果就返回空，不要编造；' \
                       '返回JSON格式的结果，要包含intent键，如：{"intent": ["婚姻", "财富"]}。' \
-                      '\n话题集合：教学类、高中前学业、高中后学业、婚姻、财富、职业、恋爱、健康、推运' \
+                      '\n话题集合：占星教学、高中前学业、高中后学业、婚姻、财富、职业、恋爱、健康、推运' \
                       f'\nquery：{query}'
-    print(prompt_template)
+    # print(prompt_template)
 
-    response = fetch_intent(prompt_template)
+    intent_vec = fetch_intent(prompt_template)
+
+    return intent_vec
 
 
-
-def generate_llm_input(question='我的恋爱怎么样'):
+def generate_llm_input(intent_vec, question='我的恋爱怎么样'):
     # prompt_template = """Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, NEVER try to make up an answer.
     # Context:{context}
     # Question: {question}
     # """
-
-    intent = user_intent(query=question)
-
-    context = generate_context()
+    context = generate_context(intent_vec)
     guest_info = '\n'.join(st.session_state.core.guest_desc_vec)
     # question = '我的婚姻怎么样？'
 
@@ -500,27 +502,25 @@ if st.session_state.start_btn == 1:
         input_placeholder.markdown(user_input)
         add_user_history(user_input)
 
-        final_user_input = generate_llm_input(user_input)
-        print(final_user_input)
+        intent_vec = user_intent(query=user_input)
+        if intent_vec is None or len(intent_vec) == 0:
+            response = fake_robot_response('我只回答占星相关的问题哦~')
+        else:
+            final_user_input = generate_llm_input(question=user_input, intent_vec=intent_vec)
+            print(final_user_input)
 
-        response = fetch_chatglm_turbo_response(final_user_input)
+            response = fetch_chatglm_turbo_response(final_user_input)
 
-        # llm_flag = False
-        res_vec = []
-        for event in response:
-            response_data = event.data
-            res_vec.append(response_data)
-            message_placeholder.markdown(''.join(res_vec))
+            # llm_flag = False
+            res_vec = []
+            for event in response:
+                response_data = event.data
+                res_vec.append(response_data)
+                message_placeholder.markdown(''.join(res_vec))
 
-            if isinstance(event, FakeData):
-                time.sleep(0.05)
-            else:
-                llm_flag = True
+                if isinstance(event, FakeData):
+                    time.sleep(0.05)
+                else:
+                    llm_flag = True
 
-
-        # history.append({'content': ''.join(res_vec), 'role': "assistant"})
-        add_robot_history(''.join(res_vec))
-
-        # 更新历史记录和past key values
-        # st.session_state.history = history
-        # st.session_state.past_key_values = past_key_values
+            add_robot_history(''.join(res_vec))

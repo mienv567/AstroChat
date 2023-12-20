@@ -351,11 +351,11 @@ def debug():
 
 
 topic_term_dict = {'高中前学业': ['学业-高中前'],
-                  '高中后学业': ['学业-高中后'],
-                  '婚姻': ['婚姻', '配偶'],
-                  '财富': ['财富'],
-                  '职业': ['职业'],
-                  '恋爱': ['恋爱']}
+                   '高中后学业': ['学业-高中后'],
+                   '婚姻': ['婚姻', '配偶'],
+                   '财富': ['财富'],
+                   '职业': ['职业'],
+                   '恋爱': ['恋爱']}
 
 def generate_context(intent_vec):
     filtered_dict = st.session_state.filtered_dict
@@ -421,7 +421,7 @@ def user_intent(query):
     return intent_vec
 
 
-def generate_llm_input(intent_vec, question='我的恋爱怎么样'):
+def get_prompt(intent_vec, question='我的恋爱怎么样'):
     # prompt_template = """Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, NEVER try to make up an answer.
     # Context:{context}
     # Question: {question}
@@ -431,13 +431,28 @@ def generate_llm_input(intent_vec, question='我的恋爱怎么样'):
     # question = '我的婚姻怎么样？'
 
     prompt_tmplate = f'现在你是一名占星师，' \
-                     f'请仅根据提供的上下文回答问题，不要使用任何外部知识。如果你不知道答案，请直说你不知道，禁止编造上下文和客户星盘，也不要试图编造答案。若星体得分>2要解读旺的部分，<-2解读衰的部分，严重受克也属于衰。' \
+                     f'请仅根据提供的上下文和星盘信息回答问题，不要使用任何外部知识。如果你不知道答案，请直说你不知道，不要试图编造答案。\n' \
+                     f'\n提示：若客户星盘中星体得分>=2要解读旺的部分，<-2解读衰的部分，严重受克也属于衰。' \
                      f'\n在上下文中，旺：表示星体得分>1时候，衰：表示星体得分<-1时候\n' \
                      f'\n\n上下文：{context}\n' \
-                     f'\n客户星盘：{guest_info}\n' \
-                     f'\n问题：{question}'
+                     f'\n星盘信息：{guest_info}\n' \
+                     f'\n：{question}'
 
-    return prompt_tmplate
+    prompt = f"""
+    现在你是一名占星师，请仅根据提供的上下文回答问题，不要使用任何外部知识，如果你不知道答案，请直说你不知道，不要试图编造答案。
+    提示：星盘信息和上下文以键值对的形式组织，通过匹配上下文中的键与星盘信息中的键，利用上下文的值来解读。当星盘中的星体得分大于等于1时，上下文中的旺势部分更有可能发生；而当得分小于等于-2时，上下文中的衰弱部分更有可能发生。
+    
+    上下文：{context}
+    
+    星盘信息：{guest_info}
+    
+    Question：{question}
+    """
+
+    print('\n')
+    print(prompt)
+
+    return prompt
 
 
 if st.session_state.finished_curl_natal:
@@ -520,8 +535,8 @@ if st.session_state.start_btn == 1:
         elif '占星教学' in intent_vec:
             response = fake_robot_response('你好像在让我教你？我只能回答有限的占星问题哦~')
         else:
-            final_user_input = generate_llm_input(question=user_input, intent_vec=intent_vec)
-            print(final_user_input)
+            final_user_input = get_prompt(question=user_input, intent_vec=intent_vec)
+            # print(final_user_input)
 
             response = fetch_chatglm_turbo_response(final_user_input)
 

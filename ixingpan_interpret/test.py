@@ -36,4 +36,16 @@ if __name__ == '__main__':
     load_pickle()
 
     for k, svec in res_dict.items():
-        print(k, '-->',len(svec))
+        if k == '太阳8宫':
+            print('size:', len(svec))
+            for msg in svec:
+                print(type(msg))
+                if isinstance(msg, list):
+                    print(len(msg))
+                    for sub_msg in msg:
+                        print(f'\n{sub_msg}')
+                else:
+                    print(f'{msg}')
+        # print(k, '-->',len(svec))
+        # if len(svec) >= 1:
+        #     print(k, '\t', len(svec))

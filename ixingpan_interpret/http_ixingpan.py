@@ -4,6 +4,8 @@ import json
 import pickle, os
 import random
 import time
+from dateutil.relativedelta import relativedelta
+
 
 import requests
 from bs4 import BeautifulSoup
@@ -18,7 +20,7 @@ relation2 = ['合', '拱', '刑', '六合']
 # relation2：火星正相天王（拱）
 
 res_dict = {}
-
+load_size = 0
 
 def get_combination() -> set:
     # 太阳1宫
@@ -55,7 +57,7 @@ def get_url(sdate, nday):
 
     from datetime import datetime, timedelta
 
-    def traverse_hours(sdate, nday):
+    def traverse_hours(sdate, ndays):
         start_date = datetime.strptime(sdate, "%Y-%m-%d")
         end_date = start_date + timedelta(days=nday)
         current_date = start_date
@@ -65,9 +67,25 @@ def get_url(sdate, nday):
             date_str = current_date.strftime("%Y-%m-%d")
             time_str = current_date.strftime("%H:%M")
             result.append((date_str, time_str))
-            current_date += timedelta(hours=1)
+            current_date += timedelta(hours=12)
 
         return result
+
+
+    def traverse_years(sdate, nyears):
+        start_date = datetime.strptime(sdate, "%Y-%m-%d")
+        end_date = start_date + relativedelta(years=nyears)
+        current_date = start_date
+        result = []
+
+        while current_date < end_date:
+            date_str = current_date.strftime("%Y-%m-%d")
+            time_str = current_date.strftime("%H:%M")
+            result.append((date_str, time_str))
+            current_date += relativedelta(years=1)
+        
+        return result
+
 
     param_vec = traverse_hours(sdate, nday)
 
@@ -123,17 +141,19 @@ def dump_file():
     # for k, v in res_dict.items():
     #     print(f'{k} list_size:{len(v)}')
 
-    print(f'\n\n\nFinished Curl Pickle File, Size:{len(res_dict)}')
+    print(f'\nFinished Curl Pickle File, Size:{len(res_dict)}')
 
 
 def load_pickle():
     global res_dict
+    global load_size
 
     if os.path.exists('./data.pickle'):
         with open("data.pickle", "rb") as file:
             tmp = pickle.load(file)
 
         res_dict = tmp
+        load_size = len(res_dict)
         print(f'Load Pickle File, size:{len(res_dict)}')
 
 
@@ -142,22 +162,25 @@ def cal_diff(all_keys):
 
     difference = all_keys - a
 
-    print(f'\n\ncal_diff: {len(difference)}\n{list(difference)}')
+    print(f'cal_diff: {len(difference)}\n{list(difference)}')
 
 
 if __name__ == '__main__':
     load_pickle()
 
     all_keys = get_combination()
-    url_vec = get_url('2000-08-06', nday=1)
+    url_vec = get_url('2015-10-10', nday=1)
 
     for url in url_vec:
-        random_number = random.randint(1, 3)
+        random_number = random.randint(1, 4)
         time.sleep(random_number)
         print(f'start process url {url}')
         get_interpret_soup(url)
 
-    dump_file()
+        if load_size != len(res_dict):
+            dump_file()
+
+    # dump_file()
 
     cal_diff(all_keys)
 

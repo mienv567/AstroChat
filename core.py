@@ -54,6 +54,10 @@ class Core():
         self.interpret_sum = {}
         self.interpret_moon = {}
 
+        # ixingpan的各种解读
+        self.interpret_dict = {}
+
+
     def execute(self,):
         self._init_knowledge_dict()
         self._http_ixingpan()
@@ -197,7 +201,22 @@ class Core():
         self.chart_svg_html = res
 
     def _parse_web_interpret(self):
+        self.interpret_dict.clear()
+
         div_tags = self.soup.find_all('div', class_='interpretation-section')
+        for div_tag in div_tags:
+            span_tag = div_tag.find_all('span', class_='interpretation-header')
+            title = span_tag[0].text
+
+            # 找解析
+            p_tags = div_tag.find_all('p')
+            filtered_p_tags = [p_tag for p_tag in p_tags if not p_tag.find_parent(class_='interpretation-section-header')]
+            interpret = filtered_p_tags[0].text.strip().replace('来源：点击查看', '')
+            # print('-->', interpret)
+
+            self.interpret_dict[title] = interpret
+
+
         for div_tag in div_tags:
             # 找:太阳双子这样的标题
             span_tag = div_tag.find('span')

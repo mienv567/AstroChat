@@ -25,17 +25,17 @@ col_date, col_time = st.columns(2)
 with col_date:
     st.subheader('Date Picker')
     # Use date_picker to create a date picker
-    date_string = date_picker(picker_type=PickerType.time.string_value,
+    date_string = date_picker(picker_type=PickerType.year.string_value,
                               # unit=Unit.years.string_value,
-                              unit="minutes",
+                              unit="days",
                               key='date_picker')
 
 with col_time:
     st.subheader('Date Picker')
     # Use date_picker to create a date picker
-    date_string = date_picker(picker_type=PickerType.time.string_value,
+    date_string = date_picker(picker_type=PickerType.year.string_value,
                               # unit=Unit.years.string_value,
-                              unit="minutes",
+                              unit=Unit.days.string_value,
                               key='date_picker1')
 
 

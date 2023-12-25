@@ -11,6 +11,8 @@ import zhipuai
 from utils import init_llm_knowledge_dict
 from utils import time_loc_task, date_task, time_task, loc_task, confirm_task, ixingpan_task, moon_solar_asc_task
 from core import Core
+from streamlit_date_picker import date_range_picker, PickerType, Unit, date_picker
+
 
 task_chain = [date_task, time_task, loc_task, confirm_task, ixingpan_task, moon_solar_asc_task]
 
@@ -184,7 +186,9 @@ if "past_key_values" not in st.session_state:
 
 
 # --------------------------------- 搞 Greeting --------------------
-st.markdown("### :rainbow[「桥下甄选」] *——基于大数据的占星机器人* ")
+st.markdown("##### :rainbow[桥下甄选] ")
+st.caption("一个基于大数据的占星机器人")
+
 st.markdown("> 占星服务，请选择:rainbow[「诞生日」]和:rainbow[「诞生地」]，建议精确到小时、区县。   ")
 st.markdown("")
 
@@ -219,8 +223,9 @@ with col_time:
 
 
     label = ':alarm_clock: 请选择生时'
-    st.time_input(label=label, key='time_of_birth', on_change=on_time_change)
-
+    # st.write(label)
+    st.time_input(label=label, key='time_of_birth', on_change=on_time_change, step=60)
+    # date_picker(picker_type=PickerType.time.string_value, unit=Unit.minutes.string_value, key='time_of_birth')
 
 def update_birthday():
     # https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/
@@ -482,18 +487,15 @@ if st.session_state.finished_curl_natal:
             st.markdown(f'#### :rainbow[{key}]')
             st.markdown(f'> {val}')
     else:  # TODO：目前走http，之后抓下来（放小红书）
-        for k, v in st.session_state.core.interpret_asc.items():
+        # for k, v in st.session_state.core.interpret_asc.items():
+        #     st.markdown('----')
+        #     st.markdown(f'#### :rainbow[{k}]')
+        #     st.markdown(f'> {v}')
+        for k, v in st.session_state.core.interpret_dict.items():
             st.markdown('----')
             st.markdown(f'#### :rainbow[{k}]')
             st.markdown(f'> {v}')
 
-    # st.markdown(st.session_state.core.guest_desc_vec)
-    # st.markdown(st.session_state.core.star_loc_vec)
-    # st.markdown(st.session_state.core.ruler_fly_vec)
-    #
-    # debug()
-
-    # print(generate_llm_input(question=''))
 
 
 

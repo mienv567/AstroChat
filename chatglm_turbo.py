@@ -134,7 +134,7 @@ def load_knowledge_file():
 
 
 # 设置页面标题、图标和布局
-st.set_page_config(page_title="星盘助手", page_icon="🦈")
+st.set_page_config(page_title="MBTI助手", page_icon="🦈")
 # st.set_page_config(page_title="桥下指北", page_icon=":robot:", layout="wide")
 
 # 初始化历史记录和past key values
@@ -186,7 +186,7 @@ if "past_key_values" not in st.session_state:
 
 
 # --------------------------------- 搞 Greeting --------------------
-st.markdown("##### :rainbow[星盘助手] ")
+st.markdown("##### :rainbow[MBTI助手] ")
 st.caption("一个基于大数据的占星机器人")
 
 st.markdown("> MBTI/星座服务，请选择您的 :rainbow[出生日期] 和 :rainbow[出生地点]，建议提供尽可能准确的小时和区县信息。")

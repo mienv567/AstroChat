@@ -8,6 +8,7 @@
 #########################################################################
 
 import pickle, os
+import re
 
 """
 File: test.py
@@ -32,11 +33,15 @@ def load_pickle():
         print(f'Load Pickle File, size:{len(res_dict)}')
 
 
+
 if __name__ == '__main__':
     load_pickle()
 
     for k, svec in res_dict.items():
-        if '1宫' in k and '11宫' not in k and '飞' not in k:
+        match = re.search(r"太阳\d+宫", k)
+
+        if match:
+        # if '1宫' in k and '11宫' not in k and '飞' not in k:
             print(f'\n\n{k}')
 
             final_vec = []

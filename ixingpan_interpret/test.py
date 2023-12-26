@@ -36,6 +36,24 @@ if __name__ == '__main__':
     load_pickle()
 
     for k, svec in res_dict.items():
+        if '1宫' in k and '11宫' not in k and '飞' not in k:
+            print(f'\n\n{k}')
+
+            final_vec = []
+            for msg in svec:
+                if isinstance(msg, list):
+                    for sub_msg in msg:
+                        if sub_msg not in final_vec:
+                            final_vec.append(sub_msg)
+                else:
+                    if msg not in final_vec:
+                        final_vec.append(msg)
+
+            for i, msg in enumerate(final_vec):
+                idx = i + 1
+                print(f'解释{idx}、{msg}')
+
+        '''
         if k == '太阳8宫':
             print('size:', len(svec))
             for msg in svec:
@@ -46,6 +64,7 @@ if __name__ == '__main__':
                         print(f'\n{sub_msg}')
                 else:
                     print(f'{msg}')
+        '''
         # print(k, '-->',len(svec))
         # if len(svec) >= 1:
         #     print(k, '\t', len(svec))

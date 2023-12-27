@@ -38,7 +38,7 @@ if __name__ == '__main__':
     load_pickle()
 
     for k, svec in res_dict.items():
-        match = re.search(r"水星\d+宫", k)
+        match = re.search(r"火星\d+宫", k)
 
         if match:
         # if '1宫' in k and '11宫' not in k and '飞' not in k:

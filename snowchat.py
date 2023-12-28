@@ -3,14 +3,11 @@ import warnings
 
 import streamlit as st
 from ui.snowchat_ui import message_func
-# from utils.snowddl import Snowddl
 
-warnings.filterwarnings("ignore")
-chat_history = []
-# snow_ddl = Snowddl()
 
-st.title("snowChat")
-st.caption("Talk your way through data")
+st.set_page_config(page_title="MBTI助手", page_icon="🦈")
+st.markdown("##### :rainbow[MBTI助手] ")
+st.caption("一个基于大数据的占星机器人")
 
 
 INITIAL_MESSAGE = [
@@ -47,70 +44,3 @@ for message in st.session_state.messages:
         True if message["role"] == "user" else False,
         True if message["role"] == "data" else False,
     )
-
-# callback_handler = StreamlitUICallbackHandler()
-#
-# chain = load_chain(st.session_state["model"], callback_handler)
-
-#
-# def append_chat_history(question, answer):
-#     st.session_state["history"].append((question, answer))
-#
-#
-# def get_sql(text):
-#     sql_match = re.search(r"```sql\n(.*)\n```", text, re.DOTALL)
-#     return sql_match.group(1) if sql_match else None
-#
-#
-# def append_message(content, role="assistant", display=False):
-#     message = {"role": role, "content": content}
-#     st.session_state.messages.append(message)
-#     if role != "data":
-#         append_chat_history(st.session_state.messages[-2]["content"], content)
-#
-#     if callback_handler.has_streaming_ended:
-#         callback_handler.has_streaming_ended = False
-#         return
-#
-#
-# def handle_sql_exception(query, conn, e, retries=2):
-#     append_message("Uh oh, I made an error, let me try to fix it..")
-#     error_message = (
-#         "You gave me a wrong SQL. FIX The SQL query by searching the schema definition:  \n```sql\n"
-#         + query
-#         + "\n```\n Error message: \n "
-#         + str(e)
-#     )
-#     new_query = chain({"question": error_message, "chat_history": ""})["answer"]
-#     append_message(new_query)
-#     if get_sql(new_query) and retries > 0:
-#         return execute_sql(get_sql(new_query), conn, retries - 1)
-#     else:
-#         append_message("I'm sorry, I couldn't fix the error. Please try again.")
-#         return None
-#
-#
-# def execute_sql(query, conn, retries=2):
-#     if re.match(r"^\s*(drop|alter|truncate|delete|insert|update)\s", query, re.I):
-#         append_message("Sorry, I can't execute queries that can modify the database.")
-#         return None
-#     try:
-#         return conn.sql(query).collect()
-#     except SnowparkSQLException as e:
-#         return handle_sql_exception(query, conn, e, retries)
-#
-#
-# if st.session_state.messages[-1]["role"] != "assistant":
-#     content = st.session_state.messages[-1]["content"]
-#     if isinstance(content, str):
-#         result = chain(
-#             {"question": content, "chat_history": st.session_state["history"]}
-#         )["answer"]
-#         print(result)
-#         append_message(result)
-#         # if get_sql(result):
-#         #     conn = SnowflakeConnection().get_session()
-#         #     df = execute_sql(get_sql(result), conn)
-#         #     if df is not None:
-#         #         callback_handler.display_dataframe(df)
-#         #         append_message(df, "data", True)

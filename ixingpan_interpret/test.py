@@ -32,16 +32,17 @@ def load_pickle():
         load_size = len(res_dict)
         print(f'Load Pickle File, size:{len(res_dict)}')
 
-
+pattern = r'^(太阳|月亮|水星|金星|火星|木星|土星|冥王星|海王|天王|婚神)([1-9]|1[0-2])宫$'
 
 if __name__ == '__main__':
     load_pickle()
 
     for k, svec in res_dict.items():
-        match = re.search(r"海王\d+宫", k)
+        # if re.match(pattern, k):
+        #     print(k)
+        match = re.search(r"婚神\d+宫", k)
 
         if match:
-        # if '1宫' in k and '11宫' not in k and '飞' not in k:
             print(f'\n\n{k}')
 
             final_vec = []
@@ -58,18 +59,3 @@ if __name__ == '__main__':
                 idx = i + 1
                 print(f'解释{idx}、{msg}')
 
-        '''
-        if k == '太阳8宫':
-            print('size:', len(svec))
-            for msg in svec:
-                print(type(msg))
-                if isinstance(msg, list):
-                    print(len(msg))
-                    for sub_msg in msg:
-                        print(f'\n{sub_msg}')
-                else:
-                    print(f'{msg}')
-        '''
-        # print(k, '-->',len(svec))
-        # if len(svec) >= 1:
-        #     print(k, '\t', len(svec))

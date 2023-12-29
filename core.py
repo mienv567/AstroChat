@@ -18,6 +18,10 @@ pattern_house = re.compile(r'\d+')
 constellation_whitelist = {'天王', '海王', '冥王', '太阳', '月亮', '水星', '火星', '木星', '土星', '金星'}
 seven_star_list = ['太阳', '月亮', '水星', '火星', '木星', '土星', '金星']
 
+star_loc_pattern = r'^(太阳|月亮|水星|金星|火星|木星|土星|冥王星|海王|天王|婚神)([1-9]|1[0-2])宫$'
+sun_pattern = r'^太阳(白羊|金牛|双子|巨蟹|狮子|处女|天秤|天蝎|射手|摩羯|水瓶|双鱼)$'
+moon_pattern = r'^月亮(白羊|金牛|双子|巨蟹|狮子|处女|天秤|天蝎|射手|摩羯|水瓶|双鱼)$'
+asc_pattern = r'^上升(白羊|金牛|双子|巨蟹|狮子|处女|天秤|天蝎|射手|摩羯|水瓶|双鱼)$'
 
 class Core():
     def __init__(self, birthday, province, city, area):
@@ -51,8 +55,11 @@ class Core():
 
         # Web-Interpret, 找 <div class='interpretation-section'>, <div class='moreinterp'>
         self.interpret_asc = {}
-        self.interpret_sum = {}
-        self.interpret_moon = {}
+        # self.interpret_sum = {}
+        # self.interpret_moon = {}
+        self.sun_moon_sign = ''
+        self.asc_sun_sign = ''
+        self.asc_sign = ''
 
         # ixingpan的各种解读
         self.interpret_dict = {}
@@ -184,7 +191,7 @@ class Core():
 
             # msg = f'{msg_star_loc}，{msg_lord}，在{constellation}座，{msg_score} {msg_hurong}， {is_afflicted}'
             tmp = [msg_star_loc, msg_score, msg_lord, msg_hurong, f'{is_afflicted}']
-            print('-->', tmp)
+            # print('-->', tmp)
             self.guest_desc_vec.append('，'.join([item for item in tmp if item != '']))
             # logger.debug(msg)
 
@@ -203,10 +210,23 @@ class Core():
     def _parse_web_interpret(self):
         self.interpret_dict.clear()
 
+        sun_part, moon_part, asc_part = '', '', ''
+
         div_tags = self.soup.find_all('div', class_='interpretation-section')
         for div_tag in div_tags:
             span_tag = div_tag.find_all('span', class_='interpretation-header')
             title = span_tag[0].text
+
+            if re.match(asc_pattern, title):
+                asc_part = title
+            elif re.match(sun_pattern, title):
+                sun_part = title
+            elif re.match(moon_pattern, title):
+                moon_part = title
+
+            if not re.match(star_loc_pattern, title):
+                # print(f'{title} not match star_loc_pattern, continue...')
+                continue
 
             # 找解析
             p_tags = div_tag.find_all('p')
@@ -216,6 +236,12 @@ class Core():
 
             self.interpret_dict[title] = interpret
 
+        # print(self.interpret_dict)
+
+        # 更新属性：上升太阳、太阳月亮144种
+        self.asc_sun_sign = f'{asc_part}{sun_part}'
+        self.sun_moon_sign = f'{sun_part}{moon_part}'
+        self.asc_sign = asc_part
 
         for div_tag in div_tags:
             # 找:太阳双子这样的标题
@@ -228,7 +254,7 @@ class Core():
             # 找解析
             p_tags = div_tag.find_all('p')
             filtered_p_tags = [p_tag for p_tag in p_tags if not p_tag.find_parent(class_='interpretation-section-header')]
-            interpret = filtered_p_tags[0].text.strip().replace('来源：点击查看', '')
+            interpret = filtered_p_tags[0].text.strip().replace('来源：点击查看', '').strip()
             # print('-->', interpret)
 
             self.interpret_asc[title] = interpret

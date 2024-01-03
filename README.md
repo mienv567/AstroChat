@@ -1,7 +1,9 @@
 # AstroChat
-create -n chatglm python=3.10
-conda activate chatglm
-pip install -r requirements.txt
+- create -n chatglm python=3.10
+- conda activate chatglm
+- pip install -r requirements.txt
+- Embedding File Ref：https://ai.tencent.com/ailab/nlp/en/download.html
+ > [tencent-ailab-embedding-zh-d100-v0.2.0-s.txt](file%2Ftencent-ailab-embedding-zh-d100-v0.2.0-s.txt)
 
 # About Nginx
 sudo yum install nginx

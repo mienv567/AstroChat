@@ -1,5 +1,7 @@
 import re
 import streamlit as st
+
+from knowledge import Knowledge
 from ui.snowchat_ui import message_func, get_bot_message_container
 import configparser
 import json
@@ -44,7 +46,7 @@ if "messages" not in st.session_state.keys():
         config = configparser.ConfigParser()
 
         knowledge_dict: Dict[str, Dict[str, str]] = {}
-        file_name = './file/knowledge.ini'
+        file_name = './file/llm_knowledge.ini'
         config.read(file_name)
 
         # 遍历指定section的所有option
@@ -208,6 +210,8 @@ def on_button_click():
     time.sleep(0.1)
     progress_bar.empty()
 
+    st.session_state.knowledge = Knowledge(guest_dict=get_attri('core').interpret_dict)
+
     st.session_state.is_curl_natal = 1
 
     st.session_state.prompt_dict = filter_nested_dict(st.session_state.knowledge_dict, get_attri('core').interpret_dict.keys())
@@ -323,7 +327,7 @@ def get_prompt(question='我的恋爱怎么样'):
     context = '\n'.join(context_vec)
 
     prompt = f"""
-    现在你是一名占星师，请仅根据提供的上下文回答问题，不要使用任何外部知识，如果你不知道答案，请直说你不知道，不要试图编造答案。
+    现在你是一名占星师，请根据上下文回答问题，不要使用任何外部知识，如果你不知道答案，请直说你不知道，不要试图编造答案。
     提示：上下文以键值对的形式组织。当星盘中的星体得分大于等于1时，上下文中的旺势部分更有可能发生；而当得分小于等于-2时，上下文中的衰部分更有可能发生。
 
     上下文：\n{context}
@@ -392,21 +396,23 @@ if st.session_state.is_curl_natal == 1:
         st.session_state.messages.append({"role": "user", "content": user_input})
         message_func(text=user_input, role='user')
 
-        prompt = get_prompt(question=user_input)
-        response = fetch_chatglm_turbo_response(prompt)
+        recall = st.session_state.knowledge.find_top_n(user_input, top_n=3)
 
-        bot_placeholder = None
-        res_vec = []
-        for event in response:
-            response_data = event.data
-            res_vec.append(response_data)
-
-            container_content = get_bot_message_container(''.join(res_vec))
-            if bot_placeholder is None:
-                bot_placeholder = st.markdown(container_content, unsafe_allow_html=True)
-            else:
-                bot_placeholder.markdown(container_content, unsafe_allow_html=True)
-
-        bot_answer = ''.join(res_vec)
-        st.session_state.messages.append({"role": "assistant", "content": bot_answer})
+        # prompt = get_prompt(question=user_input)
+        # response = fetch_chatglm_turbo_response(prompt)
+        #
+        # bot_placeholder = None
+        # res_vec = []
+        # for event in response:
+        #     response_data = event.data
+        #     res_vec.append(response_data)
+        #
+        #     container_content = get_bot_message_container(''.join(res_vec))
+        #     if bot_placeholder is None:
+        #         bot_placeholder = st.markdown(container_content, unsafe_allow_html=True)
+        #     else:
+        #         bot_placeholder.markdown(container_content, unsafe_allow_html=True)
+        #
+        # bot_answer = ''.join(res_vec)
+        # st.session_state.messages.append({"role": "assistant", "content": bot_answer})
 

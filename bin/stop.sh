@@ -7,7 +7,7 @@
 
 
 # 获取正在运行的程序的进程 ID（PID）
-PID=$(ps aux | grep "streamlit run chatglm_turbo.py" | grep -v grep | awk '{print $2}')
+PID=$(ps aux | grep "streamlit run snowchat.py" | grep -v grep | awk '{print $2}')
 
 # 检查进程是否存在
 if [ -n "$PID" ]; then

@@ -8,7 +8,7 @@
 # Brief: 
 
 # 获取正在运行的程序的进程 ID（PID）
-PID=$(ps aux | grep "streamlit run chatglm_turbo.py" | grep -v grep | awk '{print $2}')
+PID=$(ps aux | grep "streamlit run snowchat.py" | grep -v grep | awk '{print $2}')
 
 # 检查进程是否存在
 if [ -n "$PID" ]; then
@@ -18,6 +18,6 @@ if [ -n "$PID" ]; then
 fi
 
 # 启动程序
-nohup streamlit run chatglm_turbo.py --server.port 8888 > stdout.log 2>&1 &
+nohup streamlit run snowchat.py --server.port 8888 > stdout.log 2>&1 &
 NEW_PID=$!
 echo "程序已启动，新进程 ID: $NEW_PID"

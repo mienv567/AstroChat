@@ -33,29 +33,38 @@ def load_pickle():
         print(f'Load Pickle File, size:{len(res_dict)}')
 
 pattern = r'^(太阳|月亮|水星|金星|火星|木星|土星|冥王星|海王|天王|婚神)([1-9]|1[0-2])宫$'
+pattern_sign = r'^(太阳|月亮|水星|金星|火星|木星|土星|冥王|海王|天王|婚神)(白羊|金牛|双子|巨蟹|狮子|处女|天秤|天蝎|射手|魔羯|水瓶|双鱼)$'
+pattern_sign_tmp = r'^(太阳)(白羊|金牛|双子|巨蟹|狮子|处女|天秤|天蝎|射手|魔羯|水瓶|双鱼)$'
 
 if __name__ == '__main__':
     load_pickle()
 
     for k, svec in res_dict.items():
-        # if re.match(pattern, k):
-        #     print(k)
-        match = re.search(r"婚神\d+宫", k)
-
-        if match:
-            print(f'\n\n{k}')
-
-            final_vec = []
+        # if '水星与火星' in k :
+        if re.search(r'太阳.*(月亮)', k):
+            print('\n',k)
             for msg in svec:
-                if isinstance(msg, list):
-                    for sub_msg in msg:
-                        if sub_msg not in final_vec:
-                            final_vec.append(sub_msg)
+                if not isinstance(msg, list):
+                    print(msg)
                 else:
-                    if msg not in final_vec:
-                        final_vec.append(msg)
-
-            for i, msg in enumerate(final_vec):
-                idx = i + 1
-                print(f'解释{idx}、{msg}')
+                    for sub_msg in msg:
+                        print(sub_msg)
+        # match = re.search(pattern_sign_tmp, k)
+        #
+        # if match:
+        #     print(f'\n\n{k}')
+        #
+        #     final_vec = []
+        #     for msg in svec:
+        #         if isinstance(msg, list):
+        #             for sub_msg in msg:
+        #                 if sub_msg not in final_vec:
+        #                     final_vec.append(sub_msg)
+        #         else:
+        #             if msg not in final_vec:
+        #                 final_vec.append(msg)
+        #
+        #     for i, msg in enumerate(final_vec):
+        #         idx = i + 1
+        #         print(f'解释{idx}、{msg}')
 

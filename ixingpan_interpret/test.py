@@ -40,15 +40,15 @@ if __name__ == '__main__':
     load_pickle()
 
     for k, svec in res_dict.items():
-        # if '水星与火星' in k :
-        if re.search(r'太阳.*(月亮)', k):
-            print('\n',k)
-            for msg in svec:
-                if not isinstance(msg, list):
-                    print(msg)
-                else:
-                    for sub_msg in msg:
-                        print(sub_msg)
+        print(k)
+        # if re.search(r'太阳.*(月亮)', k):
+        #     print('\n',k)
+        #     for msg in svec:
+        #         if not isinstance(msg, list):
+        #             print(msg)
+        #         else:
+        #             for sub_msg in msg:
+        #                 print(sub_msg)
         # match = re.search(pattern_sign_tmp, k)
         #
         # if match:

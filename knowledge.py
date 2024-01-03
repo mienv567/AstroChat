@@ -4,17 +4,10 @@
 # @Author  : jackietan@tencent.com
 # @File    : parse_xingpan.py
 import configparser
-import json
-import os
 import pickle
-import re
 import time
-from typing import Tuple, List, Dict
-
-import cpca
+from typing import List, Dict
 import numpy as np
-import requests
-from bs4 import BeautifulSoup
 import jieba
 from numpy import ndarray
 
@@ -29,13 +22,20 @@ class Knowledge:
         self.embedding_matrix = None
         self.stop_words = set()
 
-        self.star_loc_dict = {}  # xx1宫
-        self.star_fly_dict = {}  # xx非xx
-        self.star_aspect_dict = {}  # 太阳合月亮
+        self.kv_dict = {}  # 过滤后的 knowledge_dict
+        self.kv_embed_dict = {}
 
-        self.embed_star_loc = {}  # 太阳1宫：embedding
-        self.embed_star_fly = {}
-        self.embed_aspect = {}
+        # self.star_loc_dict = {}  # xx1宫
+        # self.star_loc_dict_marriage = {}  # xx1宫
+        #
+        # self.star_fly_dict = {}  # xx非xx
+        # self.star_aspect_dict = {}  # 太阳合月亮
+        #
+        # self.embed_star_loc = {}  # 太阳1宫：embedding
+        # self.embed_star_loc_marriage = {}  # 太阳1宫：embedding
+        #
+        # self.embed_star_fly = {}
+        # self.embed_aspect = {}
 
         """Load embedding_dict"""
         start_time = time.time()
@@ -74,13 +74,12 @@ class Knowledge:
                 else:
                     llm_knowledge_dict[section_name] = {option_name: value}
 
-        self.star_loc_dict = {k: v for k, v in llm_knowledge_dict['行星落宫'].items() if k in guest_dict.keys()}
-        self.star_fly_dict = {k: v for k, v in llm_knowledge_dict['宫主飞星'].items() if k in guest_dict.keys()}
-        self.star_aspect_dict = {k: v for k, v in llm_knowledge_dict['行星相位'].items() if k in guest_dict.keys()}
-
-        self.embed_star_loc = {k: self._avg_pooling(v) for k, v in self.star_loc_dict.items()}
-        self.embed_star_fly = {k: self._avg_pooling(v) for k, v in self.star_fly_dict.items()}
-        self.embed_aspect = {k: self._avg_pooling(v) for k, v in self.star_aspect_dict.items()}
+        section_whitelist = ['行星落宫', '配偶-宫内星', '配偶-年龄', '宫主飞星', '行星相位']
+        for section in section_whitelist:
+            tmp = {k: v for k, v in llm_knowledge_dict[section].items() if k in guest_dict.keys()}
+            tmp2 = {k: self._avg_pooling(v) for k, v in tmp.items()}
+            self.kv_dict[section] = tmp
+            self.kv_embed_dict[section] = tmp2
 
     def _avg_pooling(self, sentence) -> ndarray:
         key_segs = jieba.cut(sentence, cut_all=False)
@@ -109,36 +108,30 @@ class Knowledge:
         similarity = dot_product / (norm_a * norm_b)
         return similarity
 
-    def find_top_n(self, question, top_n=50):
+    def find_top_n(self, question, top_n=50) -> List[str]:
         print('haha')
         q_embed = self._avg_pooling(question)
         # print(q_embed)
-        similarity_star_loc = {key: self.cosine_similarity(q_embed, value) for key, value in self.embed_star_loc.items()}
-        similarity_star_fly = {key: self.cosine_similarity(q_embed, value) for key, value in self.embed_star_fly.items()}
-        similarity_aspect = {key: self.cosine_similarity(q_embed, value) for key, value in self.embed_aspect.items()}
 
-        sorted_star_loc = sorted(similarity_star_loc.items(), key=lambda x: x[1], reverse=True)
-        sorted_star_fly = sorted(similarity_star_fly.items(), key=lambda x: x[1], reverse=True)
-        sorted_aspect = sorted(similarity_aspect.items(), key=lambda x: x[1], reverse=True)
-
-        top_n_star_loc = sorted_star_loc[:top_n]
-        top_n_star_fly = sorted_star_fly[:top_n]
-        top_n_aspect = sorted_aspect[:top_n]
-
-        ret_star_loc = [f'{pair[0]},{self.star_loc_dict[pair[0]]}' for pair in top_n_star_loc]
-        # ret_star_fly = [f'{pair[0]},{self.star_loc_dict[pair[0]]}' for pair in top_n_star_loc]
+        final_vec = []
+        for section, sub_dict in self.kv_embed_dict.items():
+            similarity = {key: self.cosine_similarity(q_embed, value) for key, value in sub_dict.items()}
+            sorted_similarity = sorted(similarity.items(), key=lambda x: x[1], reverse=True)
+            top_n_similarity = sorted_similarity[:top_n]
+            ret_vec = [f'{pair[0]},{self.kv_dict[section][pair[0]]}' for pair in top_n_similarity]
+            final_vec.extend(ret_vec)
 
         # print('ret_star_loc:', ret_star_loc)
-        for pair in top_n_star_loc:
+        for pair in final_vec:
             print(pair)
 
-        return ret_star_loc
+        return final_vec
 
 def generate_embedding_file():
     term_dict = {}
     embedding_vec = []
     row = 0
-    with open('./file/tencent-ailab-embedding-zh-d100-v0.2.0-s.txt', 'r', encoding='utf-8') as file:
+    with open('/Users/tanzhen/Downloads/tencent-ailab-embedding-zh-d100-v0.2.0-s/tencent-ailab-embedding-zh-d100-v0.2.0-s.txt', 'r', encoding='utf-8') as file:
         for line in file:
             line = line.strip()
             vec = line.split(' ')

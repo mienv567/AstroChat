@@ -19,6 +19,9 @@ constellation_whitelist = {'天王', '海王', '冥王', '太阳', '月亮', '�
 seven_star_list = ['太阳', '月亮', '水星', '火星', '木星', '土星', '金星']
 
 star_loc_pattern = r'^(太阳|月亮|水星|金星|火星|木星|土星|冥王|海王|天王|婚神|福点)([1-9]|1[0-2])宫$'
+house_sign_pattern = r'^([1-9]|1[0-2])宫(白羊|金牛|双子|巨蟹|狮子|处女|天秤|天蝎|射手|摩羯|水瓶|双鱼)$'
+fly_pattern = r'^([1-9]|1[0-2])宫宫主飞([1-9]|1[0-2])宫$'
+
 sun_pattern = r'^太阳(白羊|金牛|双子|巨蟹|狮子|处女|天秤|天蝎|射手|摩羯|水瓶|双鱼)$'
 moon_pattern = r'^月亮(白羊|金牛|双子|巨蟹|狮子|处女|天秤|天蝎|射手|摩羯|水瓶|双鱼)$'
 asc_pattern = r'^上升(白羊|金牛|双子|巨蟹|狮子|处女|天秤|天蝎|射手|摩羯|水瓶|双鱼)$'
@@ -41,7 +44,7 @@ class Core():
         self.constellation_dict: Dict[str, Constellation] = {}
         self.afflict_dict: Dict[str, Affliction] = {}  # {木星: afflict}
         self.star_ruler_dict: Dict[str, List[int]] = {}
-        self.afflict_dict: Dict[str, Affliction] = {}  # {木星: afflict}
+        # self.afflict_dict: Dict[str, Affliction] = {}  # {木星: afflict}
 
         # File Dict From knowledge_web.ini
         self.knowledge_dict: Dict[str, Dict[str, str]] = {}
@@ -133,7 +136,7 @@ class Core():
                 elif star_name == '上升':
                     asc = constellation
 
-            print(solar, asc)
+            # print(solar, asc)
             self.llm_recall_key.append(f'上升{asc}')
             self.llm_recall_key.append(f'上升{asc}太阳{solar}')
 
@@ -224,7 +227,7 @@ class Core():
             elif re.match(moon_pattern, title):
                 moon_part = title
 
-            if not re.match(star_loc_pattern, title):
+            if not (re.match(star_loc_pattern, title) or re.match(house_sign_pattern, title) or re.match(fly_pattern, title)):
                 # print(f'{title} not match star_loc_pattern, continue...')
                 continue
 
@@ -236,7 +239,7 @@ class Core():
 
             self.interpret_dict[title] = interpret
 
-        # print(self.interpret_dict)
+        # print(self.interpret_dict.keys())
 
         # 更新属性：上升太阳、太阳月亮144种
         self.asc_sun_sign = f'{asc_part}{sun_part}'
@@ -361,7 +364,7 @@ class Core():
 
         if match:
             self.glon_deg = match.group(1).strip()
-            print(f'获取经纬度结果：{self.glon_deg}')
+            # print(f'获取经纬度结果：{self.glon_deg}')
             # print('获取经纬度结果：', coordinates)
         else:
             print('未匹配到数据')

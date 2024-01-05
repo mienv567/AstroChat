@@ -210,7 +210,7 @@ def on_button_click():
     time.sleep(0.1)
     progress_bar.empty()
 
-    st.session_state.knowledge = Knowledge(guest_dict=get_attri('core').interpret_dict)
+    st.session_state.knowledge = Knowledge(guest_dict=get_attri('core').interpret_dict, ruler_fly_vec=get_attri('core').ruler_fly_vec, core=st.session_state.core)
 
     st.session_state.is_curl_natal = 1
 
@@ -311,7 +311,8 @@ def display_fake_message(response):
     st.session_state.messages.append({"role": "assistant", "content": ''.join(res_vec)})
 
 
-def get_prompt(question='我的恋爱怎么样'):
+# TODO：婚姻感情、财运事业、健康问题、学业考试、家庭关系和人际关系
+def get_prompt(recall: List, question='我的恋爱怎么样'):
     # prompt_template = """Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, NEVER try to make up an answer.
     # Context:{context}
     # Question: {question}
@@ -319,23 +320,23 @@ def get_prompt(question='我的恋爱怎么样'):
     # context = generate_context(intent_vec)
     # guest_info = '。\n'.join(st.session_state.core.guest_desc_vec)
     # question = '我的婚姻怎么样？'
-    context_vec = []
-    for k, v in st.session_state.prompt_dict['行星落宫'].items():
-        msg = f'{k}={v}'
-        context_vec.append(msg)
+    # context_vec = []
+    # for k, v in st.session_state.prompt_dict['行星落宫'].items():
+    #     msg = f'{k}={v}'
+    #     context_vec.append(msg)
 
-    context = '\n'.join(context_vec)
+    context = '\n'.join(recall)
 
     prompt = f"""
-    现在你是一名占星师，请根据上下文回答问题，不要使用任何外部知识，如果你不知道答案，请直说你不知道，不要试图编造答案。
-    提示：上下文以键值对的形式组织。当星盘中的星体得分大于等于1时，上下文中的旺势部分更有可能发生；而当得分小于等于-2时，上下文中的衰部分更有可能发生。
+    现在你是一名占星师，请使用上下文回答问题，不要使用外部知识，如果不知道答案，直说你不知道，不要试图编造答案。
+    注意：上下文是键值的形式，键是星盘信息，值是对应的解读，请将多条信息通顺的拼接起来。不要说'旺'字，'衰'字要描述成注意这些情况的发生；尽可能用原文回复。
 
     上下文：\n{context}
     Question：{question}
     """
 
-    print('\n')
-    print(prompt)
+    # print('\n')
+    # print(prompt)
 
     return prompt
 
@@ -396,23 +397,27 @@ if st.session_state.is_curl_natal == 1:
         st.session_state.messages.append({"role": "user", "content": user_input})
         message_func(text=user_input, role='user')
 
-        recall = st.session_state.knowledge.find_top_n(user_input, top_n=3)
+        recall = st.session_state.knowledge.find_top_n(user_input, top_n=6)
+        print('\n\n\n')
+        for idx, i in enumerate(recall):
+            print(f'{idx}、{i}')
 
-        # prompt = get_prompt(question=user_input)
-        # response = fetch_chatglm_turbo_response(prompt)
-        #
-        # bot_placeholder = None
-        # res_vec = []
-        # for event in response:
-        #     response_data = event.data
-        #     res_vec.append(response_data)
-        #
-        #     container_content = get_bot_message_container(''.join(res_vec))
-        #     if bot_placeholder is None:
-        #         bot_placeholder = st.markdown(container_content, unsafe_allow_html=True)
-        #     else:
-        #         bot_placeholder.markdown(container_content, unsafe_allow_html=True)
-        #
-        # bot_answer = ''.join(res_vec)
-        # st.session_state.messages.append({"role": "assistant", "content": bot_answer})
+        prompt = get_prompt(recall=recall, question=user_input)
+        print('final_input is:', prompt)
+        response = fetch_chatglm_turbo_response(prompt)
+
+        bot_placeholder = None
+        res_vec = []
+        for event in response:
+            response_data = event.data
+            res_vec.append(response_data)
+
+            container_content = get_bot_message_container(''.join(res_vec))
+            if bot_placeholder is None:
+                bot_placeholder = st.markdown(container_content, unsafe_allow_html=True)
+            else:
+                bot_placeholder.markdown(container_content, unsafe_allow_html=True)
+
+        bot_answer = ''.join(res_vec)
+        st.session_state.messages.append({"role": "assistant", "content": bot_answer})
 
